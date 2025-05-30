@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Séquences pour les lots de semences par niveau -->
+        <record id="seq_seed_lot_go" model="ir.sequence">
+            <field name="name">Lot Semences GO</field>
+            <field name="code">seed.lot.go</field>
+            <field name="prefix">SL-GO-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_g1" model="ir.sequence">
+            <field name="name">Lot Semences G1</field>
+            <field name="code">seed.lot.g1</field>
+            <field name="prefix">SL-G1-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_g2" model="ir.sequence">
+            <field name="name">Lot Semences G2</field>
+            <field name="code">seed.lot.g2</field>
+            <field name="prefix">SL-G2-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_g3" model="ir.sequence">
+            <field name="name">Lot Semences G3</field>
+            <field name="code">seed.lot.g3</field>
+            <field name="prefix">SL-G3-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_g4" model="ir.sequence">
+            <field name="name">Lot Semences G4</field>
+            <field name="code">seed.lot.g4</field>
+            <field name="prefix">SL-G4-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_r1" model="ir.sequence">
+            <field name="name">Lot Semences R1</field>
+            <field name="code">seed.lot.r1</field>
+            <field name="prefix">SL-R1-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_seed_lot_r2" model="ir.sequence">
+            <field name="name">Lot Semences R2</field>
+            <field name="code">seed.lot.r2</field>
+            <field name="prefix">SL-R2-%(year)s-</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les contrôles qualité -->
+        <record id="seq_quality_control" model="ir.sequence">
+            <field name="name">Contrôle Qualité</field>
+            <field name="code">seed.quality.control</field>
+            <field name="prefix">QC-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les productions -->
+        <record id="seq_production" model="ir.sequence">
+            <field name="name">Production Semences</field>
+            <field name="code">seed.production</field>
+            <field name="prefix">PROD-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les contrats -->
+        <record id="seq_contract" model="ir.sequence">
+            <field name="name">Contrat Multiplication</field>
+            <field name="code">seed.contract</field>
+            <field name="prefix">CONT-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

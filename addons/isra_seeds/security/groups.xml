@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Catégorie principale -->
+        <record id="category_seed_traceability" model="ir.module.category">
+            <field name="name">Traçabilité des Semences</field>
+            <field name="description">Gérer les permissions du système de traçabilité des semences</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Groupes d'utilisateurs -->
+        
+        <!-- Utilisateur de base -->
+        <record id="group_seed_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Accès en lecture aux informations de base</field>
+        </record>
+
+        <!-- Technicien -->
+        <record id="group_seed_technician" model="res.groups">
+            <field name="name">Technicien</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('group_seed_user'))]"/>
+            <field name="comment">Peut créer et modifier les lots, effectuer des contrôles qualité</field>
+        </record>
+
+        <!-- Chercheur -->
+        <record id="group_seed_researcher" model="res.groups">
+            <field name="name">Chercheur</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('group_seed_technician'))]"/>
+            <field name="comment">Peut gérer les variétés et analyser les données</field>
+        </record>
+
+        <!-- Inspecteur -->
+        <record id="group_seed_inspector" model="res.groups">
+            <field name="name">Inspecteur</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('group_seed_technician'))]"/>
+            <field name="comment">Spécialisé dans les contrôles qualité et certifications</field>
+        </record>
+
+        <!-- Manager -->
+        <record id="group_seed_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('group_seed_researcher')), (4, ref('group_seed_inspector'))]"/>
+            <field name="comment">Accès complet, gestion des multiplicateurs et contrats</field>
+        </record>
+
+        <!-- Administrateur -->
+        <record id="group_seed_admin" model="res.groups">
+            <field name="name">Administrateur</field>
+            <field name="category_id" ref="category_seed_traceability"/>
+            <field name="implied_ids" eval="[(4, ref('group_seed_manager'))]"/>
+            <field name="comment">Accès administrateur complet au système</field>
+        </record>
+
+    </data>
+</odoo>
