@@ -87,4 +87,54 @@
         </record>
 
     </data>
+
+    <!-- data/sequences.xml - Ajouts -->
+
+<!-- Mouvements de stock -->
+<record id="seq_stock_move" model="ir.sequence">
+    <field name="name">Mouvement Stock</field>
+    <field name="code">seed.stock.move</field>
+    <field name="prefix">SM-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
+
+<!-- Alertes -->
+<record id="seq_alert" model="ir.sequence">
+    <field name="name">Alerte</field>
+    <field name="code">seed.alert</field>
+    <field name="prefix">ALT-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
+
+<!-- Rapports -->
+<record id="seq_report" model="ir.sequence">
+    <field name="name">Rapport</field>
+    <field name="code">seed.report</field>
+    <field name="prefix">RPT-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
+
+<!-- Alertes météo -->
+<record id="seq_weather_alert" model="ir.sequence">
+    <field name="name">Alerte Météo</field>
+    <field name="code">seed.weather.alert</field>
+    <field name="prefix">WA-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
+
+<!-- Signatures électroniques -->
+<record id="seq_digital_signature" model="ir.sequence">
+    <field name="name">Signature Électronique</field>
+    <field name="code">seed.digital.signature</field>
+    <field name="prefix">SIG-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
+
+<!-- Vérifications conformité -->
+<record id="seq_compliance_check" model="ir.sequence">
+    <field name="name">Vérification Conformité</field>
+    <field name="code">seed.compliance.check</field>
+    <field name="prefix">CC-%(year)s-</field>
+    <field name="padding">4</field>
+</record>
 </odoo>

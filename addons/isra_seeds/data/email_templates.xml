@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Email alerte expiration -->
+        <record id="email_template_lot_expiry" model="mail.template">
+            <field name="name">Alerte Expiration Lot</field>
+            <field name="model_id" ref="model_seed_lot"/>
+            <field name="subject">🚨 Alerte: Lot ${object.name} expire bientôt</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>🌾 Alerte d'Expiration - ISRA Semences</h2>
+                    
+                    <p>Bonjour,</p>
+                    
+                    <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                        <strong>Le lot ${object.name} expire bientôt !</strong>
+                        <ul>
+                            <li><strong>Variété:</strong> ${object.variety_id.name}</li>
+                            <li><strong>Niveau:</strong> ${object.level}</li>
+                            <li><strong>Quantité:</strong> ${object.quantity} kg</li>
+                            <li><strong>Date d'expiration:</strong> ${object.expiry_date}</li>
+                            <li><strong>Jours restants:</strong> ${(object.expiry_date - datetime.date.today()).days}</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Actions recommandées:</strong></p>
+                    <ul>
+                        <li>Vérifier l'état du lot</li>
+                        <li>Programmer un contrôle qualité si nécessaire</li>
+                        <li>Planifier l'utilisation avant expiration</li>
+                    </ul>
+                    
+                    <p>Cordialement,<br/>
+                    Système de Traçabilité ISRA</p>
+                </div>
+            ]]></field>
+        </record>
+        
+        <!-- Email échec contrôle qualité -->
+        <record id="email_template_quality_failure" model="mail.template">
+            <field name="name">Échec Contrôle Qualité</field>
+            <field name="model_id" ref="model_seed_quality_control"/>
+            <field name="subject">❌ Échec Contrôle Qualité - ${object.seed_lot_id.name}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>❌ Échec Contrôle Qualité - ISRA Semences</h2>
+                    
+                    <div style="background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 20px 0;">
+                        <strong>Le contrôle qualité ${object.name} a échoué</strong>
+                        <ul>
+                            <li><strong>Lot:</strong> ${object.seed_lot_id.name}</li>
+                            <li><strong>Variété:</strong> ${object.seed_lot_id.variety_id.name}</li>
+                            <li><strong>Date contrôle:</strong> ${object.control_date}</li>
+                            <li><strong>Taux germination:</strong> ${object.germination_rate}%</li>
+                            <li><strong>Pureté variétale:</strong> ${object.variety_purity}%</li>
+                            <li><strong>Inspecteur:</strong> ${object.inspector_id.name}</li>
+                        </ul>
+                    </div>
+                    
+                    <p><strong>Actions requises:</strong></p>
+                    <ul>
+                        <li>Analyser les causes de l'échec</li>
+                        <li>Mettre le lot en quarantaine</li>
+                        <li>Programmer un nouveau contrôle si nécessaire</li>
+                        <li>Informer le multiplicateur</li>
+                    </ul>
+                    
+                    <p>Observations: ${object.observations or 'Aucune'}</p>
+                </div>
+            ]]></field>
+        </record>
+        
+    </data>
+</odoo>

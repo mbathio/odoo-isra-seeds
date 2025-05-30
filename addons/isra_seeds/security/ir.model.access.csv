@@ -56,3 +56,49 @@ access_seed_weather_data_manager,seed.weather.data.manager,model_seed_weather_da
 access_seed_contract_user,seed.contract.user,model_seed_contract,group_seed_user,1,0,0,0
 access_seed_contract_manager,seed.contract.manager,model_seed_contract,group_seed_manager,1,1,1,1
 access_seed_contract_admin,seed.contract.admin,model_seed_contract,group_seed_admin,1,1,1,1
+
+# security/ir.model.access.csv - Ajouts
+
+# Mouvements de stock
+access_seed_stock_move_user,seed.stock.move.user,model_seed_stock_move,group_seed_user,1,0,0,0
+access_seed_stock_move_technician,seed.stock.move.technician,model_seed_stock_move,group_seed_technician,1,1,1,0
+access_seed_stock_move_manager,seed.stock.move.manager,model_seed_stock_move,group_seed_manager,1,1,1,1
+
+# Alertes
+access_seed_alert_user,seed.alert.user,model_seed_alert,group_seed_user,1,1,0,0
+access_seed_alert_manager,seed.alert.manager,model_seed_alert,group_seed_manager,1,1,1,1
+
+# Rapports
+access_seed_report_user,seed.report.user,model_seed_report,group_seed_user,1,0,0,0
+access_seed_report_manager,seed.report.manager,model_seed_report,group_seed_manager,1,1,1,1
+
+# KPIs
+access_seed_kpi_user,seed.kpi.user,model_seed_kpi,group_seed_user,1,0,0,0
+access_seed_kpi_researcher,seed.kpi.researcher,model_seed_kpi,group_seed_researcher,1,1,1,0
+access_seed_kpi_manager,seed.kpi.manager,model_seed_kpi,group_seed_manager,1,1,1,1
+
+# Alertes météo
+access_seed_weather_alert_user,seed.weather.alert.user,model_seed_weather_alert,group_seed_user,1,0,0,0
+access_seed_weather_alert_technician,seed.weather.alert.technician,model_seed_weather_alert,group_seed_technician,1,1,1,0
+
+# Audit
+access_seed_audit_log_user,seed.audit.log.user,model_seed_audit_log,group_seed_user,1,0,0,0
+access_seed_audit_log_admin,seed.audit.log.admin,model_seed_audit_log,group_seed_admin,1,1,1,1
+
+# Signatures électroniques
+access_seed_digital_signature_inspector,seed.digital.signature.inspector,model_seed_digital_signature,group_seed_inspector,1,1,1,0
+access_seed_digital_signature_manager,seed.digital.signature.manager,model_seed_digital_signature,group_seed_manager,1,1,1,1
+
+# Conformité
+access_seed_compliance_check_inspector,seed.compliance.check.inspector,model_seed_compliance_check,group_seed_inspector,1,1,1,1
+access_seed_compliance_item_inspector,seed.compliance.item.inspector,model_seed_compliance_item,group_seed_inspector,1,1,1,1
+access_seed_corrective_action_user,seed.corrective.action.user,model_seed_corrective_action,group_seed_user,1,1,0,0
+access_seed_corrective_action_manager,seed.corrective.action.manager,model_seed_corrective_action,group_seed_manager,1,1,1,1
+
+# Assistants (wizards)
+access_seed_bulk_lot_wizard,seed.bulk.lot.wizard,model_seed_bulk_lot_wizard,group_seed_technician,1,1,1,1
+access_seed_quick_qc_wizard,seed.quick.qc.wizard,model_seed_quick_qc_wizard,group_seed_inspector,1,1,1,1
+access_seed_data_import_wizard,seed.data.import.wizard,model_seed_data_import_wizard,group_seed_manager,1,1,1,1
+access_seed_data_export_wizard,seed.data.export.wizard,model_seed_data_export_wizard,group_seed_user,1,1,1,1
+access_seed_qr_generator_wizard,seed.qr.generator.wizard,model_seed_qr_generator_wizard,group_seed_technician,1,1,1,1
+access_seed_production_planning_wizard,seed.production.planning.wizard,model_seed_production_planning_wizard,group_seed_manager,1,1,1,1

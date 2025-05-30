@@ -294,6 +294,20 @@ class SeedLot(models.Model):
     _sql_constraints = [
         ('quantity_positive', 'CHECK(quantity > 0)', 'La quantité doit être positive !'),
     ]
+
+    # Dans seed_lot.py - ajouter ces méthodes
+def _check_expiration_alerts(self):
+    """Vérifie les lots qui expirent bientôt"""
+    lots_expiring = self.search([
+        ('expiry_date', '<=', fields.Date.today() + timedelta(days=30)),
+        ('status', '=', 'certified')
+    ])
+    for lot in lots_expiring:
+        lot.activity_schedule(
+            'mail.mail_activity_data_warning',
+            summary=f"Lot {lot.name} expire bientôt",
+            note=f"Le lot expire le {lot.expiry_date}"
+        )
     
     @api.constrains('parent_lot_id')
     def _check_parent_lot(self):

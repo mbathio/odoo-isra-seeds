@@ -265,3 +265,13 @@ class SeedQualityControl(models.Model):
         ('moisture_content_range', 'CHECK(moisture_content >= 0 AND moisture_content <= 100)', 
          'Le taux d\'humidité doit être entre 0 et 100% !'),
     ]
+
+    # Dans quality_control.py
+@api.constrains('germination_rate', 'variety_purity', 'seed_lot_id')
+def _validate_quality_standards(self):
+    """Validation selon standards internationaux ISTA"""
+    for record in self:
+        if record.seed_lot_id.variety_id.crop_type == 'rice':
+            if record.germination_rate < 80:
+                raise ValidationError("Taux de germination insuffisant pour le riz")
+        # Ajouter d'autres validations spécifiques par culture

@@ -7,6 +7,13 @@
                   name="🌾 Traçabilité Semences"
                   sequence="5"/>
         
+        <!-- Menu Tableau de Bord -->
+        <menuitem id="menu_dashboard"
+                  name="📊 Tableau de Bord"
+                  parent="menu_seed_traceability_root"
+                  action="action_seed_dashboard"
+                  sequence="5"/>
+        
         <!-- Menu Gestion -->
         <menuitem id="menu_seed_management"
                   name="Gestion"
@@ -54,6 +61,13 @@
                   action="action_quality_control"
                   sequence="10"/>
         
+        <!-- Menu Analyse Qualité -->
+        <menuitem id="menu_quality_analysis"
+                  name="Analyse Qualité"
+                  parent="menu_quality_control"
+                  action="action_quality_analysis"
+                  sequence="20"/>
+        
         <!-- Menu Production -->
         <menuitem id="menu_production"
                   name="Production"
@@ -74,11 +88,39 @@
                   action="action_contract"
                   sequence="20"/>
         
+        <!-- Menu Analyse Rendements -->
+        <menuitem id="menu_yield_analysis"
+                  name="Analyse Rendements"
+                  parent="menu_production"
+                  action="action_yield_analysis"
+                  sequence="30"/>
+        
         <!-- Menu Rapports -->
         <menuitem id="menu_reports"
                   name="Rapports"
                   parent="menu_seed_traceability_root"
                   sequence="40"/>
+        
+        <!-- Sous-menu Certificats -->
+        <menuitem id="menu_certificates"
+                  name="Certificats Qualité"
+                  parent="menu_reports"
+                  action="action_quality_control"
+                  sequence="10"/>
+        
+        <!-- Sous-menu Traçabilité -->
+        <menuitem id="menu_traceability_reports"
+                  name="Rapports de Traçabilité"
+                  parent="menu_reports"
+                  action="action_traceability_report"
+                  sequence="20"/>
+        
+        <!-- Sous-menu Étiquettes -->
+        <menuitem id="menu_lot_labels"
+                  name="Étiquettes de Lots"
+                  parent="menu_reports"
+                  action="action_seed_lot"
+                  sequence="30"/>
         
         <!-- Menu Configuration -->
         <menuitem id="menu_seed_config"
@@ -87,5 +129,26 @@
                   sequence="50"
                   groups="group_seed_manager,group_seed_admin"/>
         
+        <!-- Sous-menu Séquences -->
+        <menuitem id="menu_sequences"
+                  name="Séquences"
+                  parent="menu_seed_config"
+                  action="base.action_ir_sequence_form"
+                  sequence="10"/>
+        
+        <!-- Sous-menu Utilisateurs -->
+        <menuitem id="menu_users_config"
+                  name="Utilisateurs et Groupes"
+                  parent="menu_seed_config"
+                  action="base.action_res_users"
+                  sequence="20"/>
+        
+        <!-- Sous-menu Paramètres -->
+        <menuitem id="menu_settings"
+                  name="Paramètres"
+                  parent="menu_seed_config"
+                  action="base.action_res_config_settings"
+                  sequence="30"/>
+
     </data>
 </odoo>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue Liste Parcelles -->
+        <record id="view_parcel_tree" model="ir.ui.view">
+            <field name="name">agricultural.parcel.tree</field>
+            <field name="model">agricultural.parcel</field>
+            <field name="arch" type="xml">
+                <tree string="Parcelles Agricoles" decoration-success="status=='available'" 
+                      decoration-warning="status=='in_use'" decoration-danger="status=='maintenance'">
+                    <field name="name"/>
+                    <field name="multiplier_id"/>
+                    <field name="area"/>
+                    <field name="soil_type"/>
+                    <field name="irrigation_system"/>
+                    <field name="status" widget="badge"/>
+                    <field name="seed_lot_count"/>
+                    <field name="village"/>
+                    <field name="commune"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Parcelles -->
+        <record id="view_parcel_form" model="ir.ui.view">
+            <field name="name">agricultural.parcel.form</field>
+            <field name="model">agricultural.parcel</field>
+            <field name="arch" type="xml">
+                <form string="Parcelle Agricole">
+                    <header>
+                        <button name="action_set_available" type="object" string="Marquer Disponible" 
+                                class="oe_highlight" attrs="{'invisible': [('status', '=', 'available')]}"/>
+                        <button name="action_set_in_use" type="object" string="Marquer En Cours" 
+                                attrs="{'invisible': [('status', '=', 'in_use')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="available,in_use,resting"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_seed_lots" type="object" 
+                                    class="oe_stat_button" icon="fa-seedling">
+                                <field name="seed_lot_count" widget="statinfo" string="Lots"/>
+                            </button>
+                            <button name="action_view_productions" type="object" 
+                                    class="oe_stat_button" icon="fa-industry">
+                                <field name="production_count" widget="statinfo" string="Productions"/>
+                            </button>
+                            <button name="action_view_on_map" type="object" 
+                                    class="oe_stat_button" icon="fa-map-marker">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Voir sur</span>
+                                    <span class="o_stat_text">Carte</span>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la parcelle"/>
+                            </h1>
+                            <h2>
+                                <field name="code" placeholder="Code de la parcelle"/>
+                            </h2>
+                        </div>
+                        
+                        <group>
+                            <group string="Informations Générales">
+                                <field name="multiplier_id"/>
+                                <field name="area"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="Localisation">
+                                <field name="region"/>
+                                <field name="department"/>
+                                <field name="commune"/>
+                                <field name="village"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group string="Coordonnées GPS">
+                                <field name="latitude"/>
+                                <field name="longitude"/>
+                            </group>
+                            <group string="Caractéristiques">
+                                <field name="soil_type"/>
+                                <field name="soil_ph"/>
+                                <field name="irrigation_system"/>
+                                <field name="water_source"/>
+                            </group>
+                        </group>
+                        
+                        <field name="address" placeholder="Adresse complète de la parcelle"/>
+                        
+                        <notebook>
+                            <page string="Lots de Semences">
+                                <field name="seed_lot_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="variety_id"/>
+                                        <field name="level"/>
+                                        <field name="quantity"/>
+                                        <field name="status"/>
+                                        <field name="production_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Productions">
+                                <field name="production_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="seed_lot_id"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="status"/>
+                                        <field name="actual_yield"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Analyses de Sol">
+                                <field name="soil_analysis_ids">
+                                    <tree>
+                                        <field name="analysis_date"/>
+                                        <field name="ph"/>
+                                        <field name="organic_matter"/>
+                                        <field name="nitrogen"/>
+                                        <field name="phosphorus"/>
+                                        <field name="laboratory"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="analysis_date"/>
+                                                <field name="laboratory"/>
+                                                <field name="analyst"/>
+                                            </group>
+                                            <group>
+                                                <field name="ph"/>
+                                                <field name="organic_matter"/>
+                                                <field name="nitrogen"/>
+                                                <field name="phosphorus"/>
+                                                <field name="potassium"/>
+                                            </group>
+                                        </group>
+                                        <group string="Texture du Sol">
+                                            <field name="sand_content"/>
+                                            <field name="clay_content"/>
+                                            <field name="silt_content"/>
+                                        </group>
+                                        <group string="Autres Éléments">
+                                            <field name="calcium"/>
+                                            <field name="magnesium"/>
+                                            <field name="sulfur"/>
+                                        </group>
+                                        <field name="notes" placeholder="Notes et observations..."/>
+                                        <field name="recommendations" placeholder="Recommandations..."/>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Cultures Précédentes">
+                                <field name="previous_crop_ids">
+                                    <tree>
+                                        <field name="year"/>
+                                        <field name="season"/>
+                                        <field name="crop"/>
+                                        <field name="variety"/>
+                                        <field name="yield_obtained"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="year"/>
+                                                <field name="season"/>
+                                                <field name="crop"/>
+                                                <field name="variety"/>
+                                            </group>
+                                            <group>
+                                                <field name="yield_obtained"/>
+                                                <field name="tillage_method"/>
+                                            </group>
+                                        </group>
+                                        <field name="fertilizer_used" placeholder="Engrais utilisés..."/>
+                                        <field name="pesticide_used" placeholder="Pesticides utilisés..."/>
+                                        <field name="notes" placeholder="Notes supplémentaires..."/>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Carte Parcelles -->
+        <record id="view_parcel_map" model="ir.ui.view">
+            <field name="name">agricultural.parcel.map</field>
+            <field name="model">agricultural.parcel</field>
+            <field name="arch" type="xml">
+                <map string="Carte des Parcelles" res_partner="multiplier_id">
+                    <field name="name"/>
+                    <field name="multiplier_id"/>
+                    <field name="area"/>
+                    <field name="status"/>
+                </map>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Parcelles -->
+        <record id="view_parcel_search" model="ir.ui.view">
+            <field name="name">agricultural.parcel.search</field>
+            <field name="model">agricultural.parcel</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Parcelles">
+                    <field name="name"/>
+                    <field name="multiplier_id"/>
+                    <field name="village"/>
+                    <field name="commune"/>
+                    
+                    <filter string="Disponibles" name="available" domain="[('status', '=', 'available')]"/>
+                    <filter string="En Cours d'Utilisation" name="in_use" domain="[('status', '=', 'in_use')]"/>
+                    <filter string="En Repos" name="resting" domain="[('status', '=', 'resting')]"/>
+                    
+                    <separator/>
+                    <filter string="Irrigation Goutte-à-goutte" name="drip" domain="[('irrigation_system', '=', 'drip')]"/>
+                    <filter string="Aspersion" name="sprinkler" domain="[('irrigation_system', '=', 'sprinkler')]"/>
+                    
+                    <separator/>
+                    <filter string="Sol Argileux" name="clay" domain="[('soil_type', '=', 'clay')]"/>
+                    <filter string="Sol Sableux" name="sandy" domain="[('soil_type', '=', 'sandy')]"/>
+                    <filter string="Sol Limoneux" name="loamy" domain="[('soil_type', '=', 'loamy')]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter string="Multiplicateur" name="group_multiplier" context="{'group_by': 'multiplier_id'}"/>
+                        <filter string="Statut" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Type de Sol" name="group_soil_type" context="{'group_by': 'soil_type'}"/>
+                        <filter string="Commune" name="group_commune" context="{'group_by': 'commune'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Vue Kanban Parcelles -->
+        <record id="view_parcel_kanban" model="ir.ui.view">
+            <field name="name">agricultural.parcel.kanban</field>
+            <field name="model">agricultural.parcel</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="multiplier_id"/>
+                    <field name="area"/>
+                    <field name="status"/>
+                    <field name="soil_type"/>
+                    <field name="seed_lot_count"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field name="multiplier_id"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="object" name="action_view_on_map" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-map-marker"/> Carte
+                                            </button>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <span class="badge badge-pill" 
+                                                  t-attf-class="badge-#{status == 'available' ? 'success' : status == 'in_use' ? 'warning' : 'secondary'}">
+                                                <field name="status"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong><field name="area"/> ha</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <field name="soil_type"/>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <span class="badge badge-light">
+                                                <field name="seed_lot_count"/> lots
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action Parcelles -->
+        <record id="action_parcel" model="ir.actions.act_window">
+            <field name="name">Parcelles Agricoles</field>
+            <field name="res_model">agricultural.parcel</field>
+            <field name="view_mode">kanban,tree,form,map</field>
+            <field name="domain">[('active', '=', True)]</field>
+            <field name="context">{'default_active': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Ajouter votre première parcelle agricole
+                </p>
+                <p>
+                    Les parcelles permettent de localiser précisément
+                    vos productions de semences et d'optimiser leur gestion.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
