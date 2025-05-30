@@ -6,6 +6,7 @@ import qrcode
 import base64
 from io import BytesIO
 import json
+from datetime import datetime, timedelta
 
 class SeedLot(models.Model):
     _name = 'seed.lot'
@@ -290,24 +291,32 @@ class SeedLot(models.Model):
         ids.extend(get_children(self))
         return ids
     
+    def action_view_quality_controls(self):
+        """Action pour voir les contrôles qualité"""
+        return {
+            'name': 'Contrôles Qualité',
+            'type': 'ir.actions.act_window',
+            'res_model': 'seed.quality.control',
+            'view_mode': 'tree,form',
+            'domain': [('seed_lot_id', '=', self.id)],
+            'context': {'default_seed_lot_id': self.id}
+        }
+    
+    def action_view_child_lots(self):
+        """Action pour voir les lots descendants"""
+        return {
+            'name': 'Lots Descendants',
+            'type': 'ir.actions.act_window',
+            'res_model': 'seed.lot',
+            'view_mode': 'tree,form',
+            'domain': [('parent_lot_id', '=', self.id)],
+            'context': {'default_parent_lot_id': self.id}
+        }
+    
     # Contraintes
     _sql_constraints = [
         ('quantity_positive', 'CHECK(quantity > 0)', 'La quantité doit être positive !'),
     ]
-
-    # Dans seed_lot.py - ajouter ces méthodes
-def _check_expiration_alerts(self):
-    """Vérifie les lots qui expirent bientôt"""
-    lots_expiring = self.search([
-        ('expiry_date', '<=', fields.Date.today() + timedelta(days=30)),
-        ('status', '=', 'certified')
-    ])
-    for lot in lots_expiring:
-        lot.activity_schedule(
-            'mail.mail_activity_data_warning',
-            summary=f"Lot {lot.name} expire bientôt",
-            note=f"Le lot expire le {lot.expiry_date}"
-        )
     
     @api.constrains('parent_lot_id')
     def _check_parent_lot(self):

@@ -238,23 +238,11 @@ class SeedQualityControl(models.Model):
     
     def _send_failure_notification(self):
         """Envoie une notification en cas d'échec"""
-        # Trouver les utilisateurs à notifier (managers, admins)
-        users_to_notify = self.env['res.users'].search([
-            ('groups_id', 'in', [
-                self.env.ref('isra_seeds.group_seed_manager').id,
-                self.env.ref('base.group_system').id
-            ])
-        ])
-        
-        for user in users_to_notify:
-            self.activity_schedule(
-                'mail.mail_activity_data_todo',
-                user_id=user.id,
-                summary=f"Échec contrôle qualité - {self.seed_lot_id.name}",
-                note=f"Le contrôle qualité du lot {self.seed_lot_id.name} a échoué. "
-                     f"Taux de germination: {self.germination_rate}%, "
-                     f"Pureté: {self.variety_purity}%"
-            )
+        # Simplifiée pour éviter les erreurs de référence
+        self.message_post(
+            body=f"⚠️ ALERTE: Le contrôle qualité {self.name} a échoué. "
+                 f"Germination: {self.germination_rate}%, Pureté: {self.variety_purity}%"
+        )
     
     # Contraintes
     _sql_constraints = [
@@ -266,12 +254,11 @@ class SeedQualityControl(models.Model):
          'Le taux d\'humidité doit être entre 0 et 100% !'),
     ]
 
-    # Dans quality_control.py
-@api.constrains('germination_rate', 'variety_purity', 'seed_lot_id')
-def _validate_quality_standards(self):
-    """Validation selon standards internationaux ISTA"""
-    for record in self:
-        if record.seed_lot_id.variety_id.crop_type == 'rice':
-            if record.germination_rate < 80:
-                raise ValidationError("Taux de germination insuffisant pour le riz")
-        # Ajouter d'autres validations spécifiques par culture
+    @api.constrains('germination_rate', 'variety_purity', 'seed_lot_id')
+    def _validate_quality_standards(self):
+        """Validation selon standards internationaux ISTA"""
+        for record in self:
+            if record.seed_lot_id and record.seed_lot_id.variety_id:
+                if record.seed_lot_id.variety_id.crop_type == 'rice':
+                    if record.germination_rate < 80:
+                        raise ValidationError("Taux de germination insuffisant pour le riz")

@@ -12,7 +12,7 @@
         
         <!-- Utilisateur de base -->
         <record id="group_seed_user" model="res.groups">
-            <field name="name">Utilisateur</field>
+            <field name="name">Utilisateur Semences</field>
             <field name="category_id" ref="category_seed_traceability"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="comment">Accès en lecture aux informations de base</field>
@@ -20,7 +20,7 @@
 
         <!-- Technicien -->
         <record id="group_seed_technician" model="res.groups">
-            <field name="name">Technicien</field>
+            <field name="name">Technicien Semences</field>
             <field name="category_id" ref="category_seed_traceability"/>
             <field name="implied_ids" eval="[(4, ref('group_seed_user'))]"/>
             <field name="comment">Peut créer et modifier les lots, effectuer des contrôles qualité</field>
@@ -36,7 +36,7 @@
 
         <!-- Inspecteur -->
         <record id="group_seed_inspector" model="res.groups">
-            <field name="name">Inspecteur</field>
+            <field name="name">Inspecteur Qualité</field>
             <field name="category_id" ref="category_seed_traceability"/>
             <field name="implied_ids" eval="[(4, ref('group_seed_technician'))]"/>
             <field name="comment">Spécialisé dans les contrôles qualité et certifications</field>
@@ -44,7 +44,7 @@
 
         <!-- Manager -->
         <record id="group_seed_manager" model="res.groups">
-            <field name="name">Manager</field>
+            <field name="name">Manager Semences</field>
             <field name="category_id" ref="category_seed_traceability"/>
             <field name="implied_ids" eval="[(4, ref('group_seed_researcher')), (4, ref('group_seed_inspector'))]"/>
             <field name="comment">Accès complet, gestion des multiplicateurs et contrats</field>
@@ -52,7 +52,7 @@
 
         <!-- Administrateur -->
         <record id="group_seed_admin" model="res.groups">
-            <field name="name">Administrateur</field>
+            <field name="name">Administrateur Semences</field>
             <field name="category_id" ref="category_seed_traceability"/>
             <field name="implied_ids" eval="[(4, ref('group_seed_manager'))]"/>
             <field name="comment">Accès administrateur complet au système</field>

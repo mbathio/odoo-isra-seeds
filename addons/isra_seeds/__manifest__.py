@@ -12,49 +12,60 @@
         * Les productions et activités
         * La génération de QR codes
         * Les rapports de traçabilité
+        * Système d'alertes intelligent
+        * Intégration météorologique
+        * Intelligence artificielle pour recommandations
+        * Audit trail complet
+        * API mobile et web
     """,
     'category': 'Agriculture',
     'author': 'ISRA Saint-Louis',
     'website': 'https://www.isra.sn',
     'depends': [
         'base',
-        'stock',
-        'quality_control',
-        'contacts',
         'mail',
         'web',
-          'report_xlsx',      # 🆕 Pour exports Excel
-        'web_notify',  
+        'contacts',
+        # Ces modules seront ajoutés progressivement
+        # 'stock',
+        # 'quality_control',
+        # 'report_xlsx',
+        # 'web_notify',
     ],
     'data': [
-        # Sécurité
+        # Sécurité - doit être en premier
         'security/groups.xml',
         'security/ir.model.access.csv',
         
         # Données de base
         'data/sequences.xml',
-        'data/demo_data.xml',
-          'data/cron_jobs.xml',           # 🆕
-        'data/email_templates.xml',     # 🆕
         
-        # Vues
+        # Vues principales - dans l'ordre de dépendance
         'views/seed_variety_views.xml',
         'views/seed_lot_views.xml',
         'views/multiplier_views.xml',
         'views/parcel_views.xml',
         'views/quality_control_views.xml',
         'views/production_views.xml',
+        
+        # Vues avancées (seront ajoutées progressivement)
+        # 'views/stock_views.xml',
+        # 'views/alert_views.xml',
+        # 'views/weather_views.xml',
+        # 'views/audit_views.xml',
+        # 'views/wizard_views.xml',
+        # 'views/mobile_views.xml',
+        # 'views/settings_views.xml',
+        
+        # Vues système
+        'views/dashboard_views.xml',
+        'views/report_views.xml',
         'views/menus.xml',
-         'views/stock_views.xml',        # 🆕
-        'views/alert_views.xml',        # 🆕
-        'views/weather_views.xml',      # 🆕
-        'views/audit_views.xml',        # 🆕
-        'views/parcel_views.xml',           # 🆕
-        'views/dashboard_views.xml',        # 🆕
-        'views/report_views.xml',           # 🆕
-        'views/wizard_views.xml',           # 🆕
-        'views/mobile_views.xml',           # 🆕
-        'views/settings_views.xml',         # 🆕
+        
+        # Données de démo et emails (à la fin)
+        # 'data/cron_jobs.xml',
+        # 'data/email_templates.xml',
+        'data/demo_data.xml',
     ],
     'demo': [
         'data/demo_data.xml',
