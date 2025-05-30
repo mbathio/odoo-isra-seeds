@@ -26,11 +26,11 @@
         'mail',
         'web',
         'contacts',
-        # Ces modules seront ajoutés progressivement
+        # Modules commentés pour éviter les dépendances manquantes
         # 'stock',
         # 'quality_control',
         # 'report_xlsx',
-        # 'web_notify',
+        # 'web_notify',  # <-- Cette ligne était problématique
     ],
     'data': [
         # Sécurité - doit être en premier

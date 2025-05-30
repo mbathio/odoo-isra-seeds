@@ -110,11 +110,6 @@ class SeedProduction(models.Model):
         'production_id',
         string='Problèmes'
     )
-    weather_data_ids = fields.One2many(
-        'seed.weather.data',
-        'production_id',
-        string='Données Météo'
-    )
     
     # Champs calculés
     activity_count = fields.Integer(
@@ -372,91 +367,6 @@ class SeedProductionIssue(models.Model):
             'resolved': True,
             'resolved_date': fields.Date.today()
         })
-
-class SeedWeatherData(models.Model):
-    _name = 'seed.weather.data'
-    _description = 'Données Météorologiques'
-    _order = 'record_date desc'
-    
-    production_id = fields.Many2one(
-        'seed.production',
-        'Production',
-        ondelete='cascade'
-    )
-    parcel_id = fields.Many2one(
-        'agricultural.parcel',
-        'Parcelle',
-        help="Si pas lié à une production spécifique"
-    )
-    
-    record_date = fields.Date(
-        'Date d\'Enregistrement',
-        required=True,
-        default=fields.Date.today
-    )
-    
-    # Paramètres météorologiques
-    temperature_min = fields.Float('Température Min (°C)')
-    temperature_max = fields.Float('Température Max (°C)')
-    temperature_avg = fields.Float(
-        'Température Moyenne (°C)',
-        compute='_compute_temperature_avg',
-        store=True
-    )
-    humidity = fields.Float('Humidité Relative (%)')
-    rainfall = fields.Float('Précipitations (mm)')
-    wind_speed = fields.Float('Vitesse du Vent (km/h)')
-    wind_direction = fields.Selection([
-        ('N', 'Nord'),
-        ('NE', 'Nord-Est'),
-        ('E', 'Est'),
-        ('SE', 'Sud-Est'),
-        ('S', 'Sud'),
-        ('SW', 'Sud-Ouest'),
-        ('W', 'Ouest'),
-        ('NW', 'Nord-Ouest'),
-    ], string='Direction du Vent')
-    
-    # Conditions générales
-    weather_condition = fields.Selection([
-        ('sunny', 'Ensoleillé'),
-        ('partly_cloudy', 'Partiellement Nuageux'),
-        ('cloudy', 'Nuageux'),
-        ('rainy', 'Pluvieux'),
-        ('stormy', 'Orageux'),
-        ('foggy', 'Brouillard'),
-    ], string='Condition Météo')
-    
-    # Source et métadonnées
-    data_source = fields.Selection([
-        ('manual', 'Saisie Manuelle'),
-        ('weather_station', 'Station Météo'),
-        ('api', 'API Météo'),
-        ('satellite', 'Données Satellite'),
-    ], string='Source des Données', default='manual')
-    
-    notes = fields.Text('Notes')
-    
-    @api.depends('temperature_min', 'temperature_max')
-    def _compute_temperature_avg(self):
-        for record in self:
-            if record.temperature_min and record.temperature_max:
-                record.temperature_avg = (record.temperature_min + record.temperature_max) / 2
-            else:
-                record.temperature_avg = 0
-    
-    @api.constrains('temperature_min', 'temperature_max')
-    def _check_temperatures(self):
-        for record in self:
-            if (record.temperature_min and record.temperature_max and 
-                record.temperature_min > record.temperature_max):
-                raise ValidationError("La température minimale ne peut pas être supérieure à la maximale !")
-    
-    @api.constrains('humidity')
-    def _check_humidity(self):
-        for record in self:
-            if record.humidity and (record.humidity < 0 or record.humidity > 100):
-                raise ValidationError("L'humidité doit être entre 0 et 100% !")
 
 # Modèle pour les contrats de multiplication
 class SeedContract(models.Model):

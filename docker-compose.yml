@@ -27,6 +27,8 @@ services:
       - ./addons:/mnt/extra-addons
       - ./config:/etc/odoo
       - odoo_data:/var/lib/odoo
+      - ./addons/oca-web:/mnt/extra-addons/oca-web
+
     restart: unless-stopped
 
 volumes:
