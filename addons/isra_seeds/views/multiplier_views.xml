@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue Liste Multiplicateurs -->
+        <record id="view_multiplier_tree" model="ir.ui.view">
+            <field name="name">res.partner.multiplier.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Multiplicateurs">
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="city"/>
+                    <field name="years_experience"/>
+                    <field name="certification_level" widget="badge"/>
+                    <field name="multiplier_status" widget="badge"/>
+                    <field name="seed_lot_count"/>
+                    <field name="parcel_count"/>
+                    <field name="total_area"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Multiplicateurs -->
+        <record id="view_multiplier_form" model="ir.ui.view">
+            <field name="name">res.partner.multiplier.form</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form string="Multiplicateur">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_seed_lots" type="object" 
+                                    class="oe_stat_button" icon="fa-seedling">
+                                <field name="seed_lot_count" widget="statinfo" string="Lots"/>
+                            </button>
+                            <button name="action_view_parcels" type="object" 
+                                    class="oe_stat_button" icon="fa-map">
+                                <field name="parcel_count" widget="statinfo" string="Parcelles"/>
+                            </button>
+                        </div>
+                        
+                        <field name="image_1920" widget="image" class="oe_avatar" 
+                               options="{'preview_image': 'image_128'}"/>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom du multiplicateur"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="is_multiplier" invisible="1"/>
+                                <field name="phone"/>
+                                <field name="email"/>
+                                <field name="years_experience"/>
+                                <field name="certification_level"/>
+                                <field name="multiplier_status"/>
+                            </group>
+                            <group>
+                                <field name="street" placeholder="Adresse"/>
+                                <field name="city"/>
+                                <field name="state_id"/>
+                                <field name="country_id"/>
+                                <field name="total_area"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Spécialisations">
+                                <field name="specialization" widget="many2many_tags"/>
+                            </page>
+                            <page string="Parcelles">
+                                <field name="parcel_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="area"/>
+                                        <field name="soil_type"/>
+                                        <field name="status"/>
+                                        <field name="seed_lot_count"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Lots de Semences">
+                                <field name="seed_lot_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="variety_id"/>
+                                        <field name="level"/>
+                                        <field name="quantity"/>
+                                        <field name="status"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Contrats">
+                                <field name="contract_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="variety_id"/>
+                                        <field name="seed_level"/>
+                                        <field name="expected_quantity"/>
+                                        <field name="status"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Multiplicateurs -->
+        <record id="action_multiplier" model="ir.actions.act_window">
+            <field name="name">Multiplicateurs</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_multiplier', '=', True)]</field>
+            <field name="context">{'default_is_multiplier': True, 'default_supplier_rank': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Ajouter votre premier multiplicateur
+                </p>
+                <p>
+                    Les multiplicateurs sont les partenaires qui produisent
+                    vos semences selon vos spécifications.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

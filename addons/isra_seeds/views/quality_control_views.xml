@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue Liste Contrôles Qualité -->
+        <record id="view_quality_control_tree" model="ir.ui.view">
+            <field name="name">seed.quality.control.tree</field>
+            <field name="model">seed.quality.control</field>
+            <field name="arch" type="xml">
+                <tree string="Contrôles Qualité" decoration-success="result=='pass'" 
+                      decoration-danger="result=='fail'">
+                    <field name="name"/>
+                    <field name="seed_lot_id"/>
+                    <field name="control_date"/>
+                    <field name="germination_rate"/>
+                    <field name="variety_purity"/>
+                    <field name="result" widget="badge"/>
+                    <field name="inspector_id"/>
+                    <field name="status" widget="badge"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Contrôles Qualité -->
+        <record id="view_quality_control_form" model="ir.ui.view">
+            <field name="name">seed.quality.control.form</field>
+            <field name="model">seed.quality.control</field>
+            <field name="arch" type="xml">
+                <form string="Contrôle Qualité">
+                    <header>
+                        <button name="action_start_test" type="object" string="Démarrer Test" 
+                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                        <button name="action_complete_test" type="object" string="Terminer Test" 
+                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="seed_lot_id"/>
+                                <field name="control_date"/>
+                                <field name="inspector_id"/>
+                                <field name="test_method"/>
+                                <field name="sample_size"/>
+                            </group>
+                            <group>
+                                <field name="laboratory"/>
+                                <field name="laboratory_ref"/>
+                                <field name="certificate_number"/>
+                                <field name="result" widget="badge"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Tests Principaux">
+                                <group>
+                                    <group>
+                                        <field name="germination_rate"/>
+                                        <field name="variety_purity"/>
+                                        <field name="moisture_content"/>
+                                        <field name="seed_health"/>
+                                    </group>
+                                    <group>
+                                        <field name="thousand_grain_weight"/>
+                                        <field name="protein_content"/>
+                                        <field name="oil_content"/>
+                                        <field name="total_impurities"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Impuretés">
+                                <group>
+                                    <field name="other_seeds"/>
+                                    <field name="inert_matter"/>
+                                </group>
+                            </page>
+                            <page string="Observations">
+                                <field name="observations" placeholder="Observations du contrôle..."/>
+                                <field name="recommendations" placeholder="Recommandations..."/>
+                            </page>
+                            <page string="Fichiers">
+                                <group>
+                                    <field name="certificate_file" filename="certificate_filename"/>
+                                    <field name="certificate_filename" invisible="1"/>
+                                    <field name="test_report_file" filename="test_report_filename"/>
+                                    <field name="test_report_filename" invisible="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Contrôles Qualité -->
+        <record id="action_quality_control" model="ir.actions.act_window">
+            <field name="name">Contrôles Qualité</field>
+            <field name="res_model">seed.quality.control</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Effectuer votre premier contrôle qualité
+                </p>
+                <p>
+                    Les contrôles qualité permettent de certifier
+                    la conformité de vos lots de semences.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

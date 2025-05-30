@@ -1,60 +1,73 @@
-# isra_seeds/models/multiplier.py
+# isra_seeds/models/seed_variety.py
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-    
-    # Champ pour identifier les multiplicateurs
-    is_multiplier = fields.Boolean('Est Multiplicateur', default=False)
-    
-    # Champs spécifiques aux multiplicateurs
-    years_experience = fields.Integer(
-        'Années d\'Expérience',
-        help="Nombre d'années d'expérience en multiplication de semences"
+class SeedVariety(models.Model):
+    _name = 'seed.variety'
+    _description = 'Variété de Semences'
+    _order = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    # Champs de base
+    code = fields.Char(
+        'Code', 
+        required=True, 
+        tracking=True,
+        help="Code unique de la variété (ex: sahel108)"
     )
-    certification_level = fields.Selection([
-        ('beginner', 'Débutant'),
-        ('intermediate', 'Intermédiaire'),
-        ('expert', 'Expert'),
-    ], string='Niveau de Certification')
+    name = fields.Char(
+        'Nom', 
+        required=True, 
+        tracking=True,
+        help="Nom de la variété"
+    )
+    crop_type = fields.Selection([
+        ('rice', 'Riz'),
+        ('maize', 'Maïs'), 
+        ('peanut', 'Arachide'),
+        ('sorghum', 'Sorgho'),
+        ('cowpea', 'Niébé'),
+        ('millet', 'Mil'),
+    ], string='Type de Culture', required=True, tracking=True)
     
-    specialization = fields.Many2many(
-        'seed.variety',
-        'multiplier_variety_rel',
-        'multiplier_id',
-        'variety_id',
-        string='Spécialisations',
-        help="Variétés de semences dans lesquelles le multiplicateur est spécialisé"
+    # Caractéristiques techniques
+    description = fields.Text('Description')
+    maturity_days = fields.Integer(
+        'Jours de Maturité', 
+        help="Nombre de jours pour arriver à maturité"
+    )
+    yield_potential = fields.Float(
+        'Potentiel de Rendement (t/ha)',
+        digits=(5, 2),
+        help="Rendement potentiel en tonnes par hectare"
+    )
+    resistances = fields.Text(
+        'Résistances',
+        help="Résistances aux maladies et parasites"
+    )
+    origin = fields.Char(
+        'Origine',
+        help="Origine de la variété (ex: AfricaRice, ISRA)"
+    )
+    release_year = fields.Integer(
+        'Année de Release',
+        help="Année de mise en circulation"
     )
     
-    multiplier_status = fields.Selection([
-        ('active', 'Actif'),
-        ('inactive', 'Inactif'),
-        ('suspended', 'Suspendu'),
-    ], string='Statut Multiplicateur', default='active')
+    # Statut
+    active = fields.Boolean('Actif', default=True)
     
-    # Relations avec les semences
+    # Relations
     seed_lot_ids = fields.One2many(
-        'seed.lot',
-        'multiplier_id',
+        'seed.lot', 
+        'variety_id', 
         string='Lots de Semences'
-    )
-    parcel_ids = fields.One2many(
-        'agricultural.parcel',
-        'multiplier_id',
-        string='Parcelles'
     )
     contract_ids = fields.One2many(
         'seed.contract',
-        'multiplier_id',
+        'variety_id',
         string='Contrats'
-    )
-    production_ids = fields.One2many(
-        'seed.production',
-        'multiplier_id',
-        string='Productions'
     )
     
     # Champs calculés
@@ -62,13 +75,9 @@ class ResPartner(models.Model):
         'Nombre de Lots',
         compute='_compute_seed_lot_count'
     )
-    parcel_count = fields.Integer(
-        'Nombre de Parcelles',
-        compute='_compute_parcel_count'
-    )
-    total_area = fields.Float(
-        'Surface Totale (ha)',
-        compute='_compute_total_area'
+    total_quantity = fields.Float(
+        'Quantité Totale (kg)',
+        compute='_compute_total_quantity'
     )
     
     @api.depends('seed_lot_ids')
@@ -76,18 +85,19 @@ class ResPartner(models.Model):
         for record in self:
             record.seed_lot_count = len(record.seed_lot_ids)
     
-    @api.depends('parcel_ids')
-    def _compute_parcel_count(self):
+    @api.depends('seed_lot_ids.quantity')
+    def _compute_total_quantity(self):
         for record in self:
-            record.parcel_count = len(record.parcel_ids)
+            record.total_quantity = sum(record.seed_lot_ids.mapped('quantity'))
     
-    @api.depends('parcel_ids.area')
-    def _compute_total_area(self):
-        for record in self:
-            record.total_area = sum(record.parcel_ids.mapped('area'))
+    # Contraintes
+    _sql_constraints = [
+        ('code_unique', 'UNIQUE(code)', 'Le code de la variété doit être unique !'),
+    ]
     
-    @api.constrains('years_experience')
-    def _check_years_experience(self):
+    @api.constrains('release_year')
+    def _check_release_year(self):
+        current_year = fields.Date.today().year
         for record in self:
-            if record.is_multiplier and record.years_experience < 0:
-                raise ValidationError("L'expérience ne peut pas être négative !")
+            if record.release_year and record.release_year > current_year:
+                raise ValidationError("L'année de release ne peut pas être dans le futur !")

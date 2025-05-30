@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Menu racine -->
+        <menuitem id="menu_seed_traceability_root"
+                  name="🌾 Traçabilité Semences"
+                  sequence="5"/>
+        
+        <!-- Menu Gestion -->
+        <menuitem id="menu_seed_management"
+                  name="Gestion"
+                  parent="menu_seed_traceability_root"
+                  sequence="10"/>
+        
+        <!-- Menu Variétés -->
+        <menuitem id="menu_seed_varieties"
+                  name="Variétés"
+                  parent="menu_seed_management"
+                  action="action_seed_variety"
+                  sequence="10"/>
+        
+        <!-- Menu Lots de Semences -->
+        <menuitem id="menu_seed_lots"
+                  name="Lots de Semences"
+                  parent="menu_seed_management"
+                  action="action_seed_lot"
+                  sequence="20"/>
+        
+        <!-- Menu Multiplicateurs -->
+        <menuitem id="menu_multipliers"
+                  name="Multiplicateurs"
+                  parent="menu_seed_management"
+                  action="action_multiplier"
+                  sequence="30"/>
+        
+        <!-- Menu Parcelles -->
+        <menuitem id="menu_parcels"
+                  name="Parcelles"
+                  parent="menu_seed_management"
+                  action="action_parcel"
+                  sequence="40"/>
+        
+        <!-- Menu Contrôle Qualité -->
+        <menuitem id="menu_quality_control"
+                  name="Contrôle Qualité"
+                  parent="menu_seed_traceability_root"
+                  sequence="20"/>
+        
+        <!-- Menu Contrôles Qualité -->
+        <menuitem id="menu_quality_controls"
+                  name="Contrôles Qualité"
+                  parent="menu_quality_control"
+                  action="action_quality_control"
+                  sequence="10"/>
+        
+        <!-- Menu Production -->
+        <menuitem id="menu_production"
+                  name="Production"
+                  parent="menu_seed_traceability_root"
+                  sequence="30"/>
+        
+        <!-- Menu Productions -->
+        <menuitem id="menu_productions"
+                  name="Productions"
+                  parent="menu_production"
+                  action="action_production"
+                  sequence="10"/>
+        
+        <!-- Menu Contrats -->
+        <menuitem id="menu_contracts"
+                  name="Contrats"
+                  parent="menu_production"
+                  action="action_contract"
+                  sequence="20"/>
+        
+        <!-- Menu Rapports -->
+        <menuitem id="menu_reports"
+                  name="Rapports"
+                  parent="menu_seed_traceability_root"
+                  sequence="40"/>
+        
+        <!-- Menu Configuration -->
+        <menuitem id="menu_seed_config"
+                  name="Configuration"
+                  parent="menu_seed_traceability_root"
+                  sequence="50"
+                  groups="group_seed_manager,group_seed_admin"/>
+        
+    </data>
+</odoo>

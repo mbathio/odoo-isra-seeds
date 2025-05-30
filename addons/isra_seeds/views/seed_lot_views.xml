@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue Liste Lots de Semences -->
+        <record id="view_seed_lot_tree" model="ir.ui.view">
+            <field name="name">seed.lot.tree</field>
+            <field name="model">seed.lot</field>
+            <field name="arch" type="xml">
+                <tree string="Lots de Semences" decoration-success="status=='certified'" 
+                      decoration-danger="status=='rejected'" decoration-warning="status=='pending'">
+                    <field name="name"/>
+                    <field name="variety_id"/>
+                    <field name="level"/>
+                    <field name="quantity"/>
+                    <field name="status" widget="badge"/>
+                    <field name="multiplier_id"/>
+                    <field name="production_date"/>
+                    <field name="expiry_date"/>
+                    <field name="is_expired" invisible="1"/>
+                    <field name="last_quality_result" widget="badge"/>
+                    <field name="child_lot_count"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Lots de Semences -->
+        <record id="view_seed_lot_form" model="ir.ui.view">
+            <field name="name">seed.lot.form</field>
+            <field name="model">seed.lot</field>
+            <field name="arch" type="xml">
+                <form string="Lot de Semences">
+                    <header>
+                        <button name="action_certify" type="object" string="Certifier" 
+                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'pending')]}"/>
+                        <button name="action_reject" type="object" string="Rejeter" 
+                                attrs="{'invisible': [('status', '!=', 'pending')]}"/>
+                        <button name="action_view_genealogy" type="object" string="Voir Généalogie" 
+                                class="oe_highlight"/>
+                        <field name="status" widget="statusbar" statusbar_visible="pending,certified,in_stock"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_quality_controls" type="object" 
+                                    class="oe_stat_button" icon="fa-clipboard-check">
+                                <field name="quality_control_count" widget="statinfo" string="Contrôles"/>
+                            </button>
+                            <button name="action_view_child_lots" type="object" 
+                                    class="oe_stat_button" icon="fa-sitemap">
+                                <field name="child_lot_count" widget="statinfo" string="Descendants"/>
+                            </button>
+                        </div>
+                        
+                        <widget name="web_ribbon" title="Expiré" bg_color="bg-danger" 
+                                attrs="{'invisible': [('is_expired', '=', False)]}"/>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="variety_id"/>
+                                <field name="level"/>
+                                <field name="quantity"/>
+                                <field name="batch_number"/>
+                            </group>
+                            <group>
+                                <field name="production_date"/>
+                                <field name="expiry_date"/>
+                                <field name="multiplier_id"/>
+                                <field name="parcel_id" domain="[('multiplier_id', '=', multiplier_id)]"/>
+                                <field name="parent_lot_id"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="QR Code">
+                                <group>
+                                    <field name="qr_code_image" widget="image" class="oe_avatar"/>
+                                    <field name="qr_code" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Contrôles Qualité">
+                                <field name="quality_control_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="control_date"/>
+                                        <field name="germination_rate"/>
+                                        <field name="variety_purity"/>
+                                        <field name="result" widget="badge"/>
+                                        <field name="inspector_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Productions">
+                                <field name="production_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="start_date"/>
+                                        <field name="status"/>
+                                        <field name="multiplier_id"/>
+                                        <field name="actual_yield"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Notes">
+                                <field name="notes" placeholder="Notes et observations..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Lots -->
+        <record id="view_seed_lot_search" model="ir.ui.view">
+            <field name="name">seed.lot.search</field>
+            <field name="model">seed.lot</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Lots">
+                    <field name="name"/>
+                    <field name="variety_id"/>
+                    <field name="multiplier_id"/>
+                    
+                    <filter string="En Attente" name="pending" domain="[('status', '=', 'pending')]"/>
+                    <filter string="Certifiés" name="certified" domain="[('status', '=', 'certified')]"/>
+                    <filter string="En Stock" name="in_stock" domain="[('status', '=', 'in_stock')]"/>
+                    
+                    <separator/>
+                    <filter string="GO" name="go" domain="[('level', '=', 'GO')]"/>
+                    <filter string="G1" name="g1" domain="[('level', '=', 'G1')]"/>
+                    <filter string="R1" name="r1" domain="[('level', '=', 'R1')]"/>
+                    <filter string="R2" name="r2" domain="[('level', '=', 'R2')]"/>
+                    
+                    <separator/>
+                    <filter string="Expirant bientôt" name="expiring_soon" 
+                            domain="[('expiry_date', '&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter string="Variété" name="group_variety" context="{'group_by': 'variety_id'}"/>
+                        <filter string="Niveau" name="group_level" context="{'group_by': 'level'}"/>
+                        <filter string="Statut" name="group_status" context="{'group_by': 'status'}"/>
+                        <filter string="Multiplicateur" name="group_multiplier" context="{'group_by': 'multiplier_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action Lots de Semences -->
+        <record id="action_seed_lot" model="ir.actions.act_window">
+            <field name="name">Lots de Semences</field>
+            <field name="res_model">seed.lot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('active', '=', True)]</field>
+            <field name="context">{'default_active': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer votre premier lot de semences
+                </p>
+                <p>
+                    Les lots permettent de tracer vos semences de leur production
+                    jusqu'à leur distribution finale.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

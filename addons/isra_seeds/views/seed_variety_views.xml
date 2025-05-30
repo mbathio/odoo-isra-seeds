@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vue Liste Variétés -->
+        <record id="view_seed_variety_tree" model="ir.ui.view">
+            <field name="name">seed.variety.tree</field>
+            <field name="model">seed.variety</field>
+            <field name="arch" type="xml">
+                <tree string="Variétés de Semences">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="crop_type"/>
+                    <field name="maturity_days"/>
+                    <field name="yield_potential"/>
+                    <field name="seed_lot_count"/>
+                    <field name="origin"/>
+                    <field name="release_year"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire Variétés -->
+        <record id="view_seed_variety_form" model="ir.ui.view">
+            <field name="name">seed.variety.form</field>
+            <field name="model">seed.variety</field>
+            <field name="arch" type="xml">
+                <form string="Variété de Semences">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_seed_lots" type="object" 
+                                    class="oe_stat_button" icon="fa-seedling">
+                                <field name="seed_lot_count" widget="statinfo" string="Lots"/>
+                            </button>
+                        </div>
+                        
+                        <widget name="web_ribbon" title="Inactif" 
+                                bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la variété"/>
+                            </h1>
+                            <h2>
+                                <field name="code" placeholder="Code de la variété"/>
+                            </h2>
+                        </div>
+                        
+                        <group>
+                            <group>
+                                <field name="crop_type"/>
+                                <field name="maturity_days"/>
+                                <field name="yield_potential"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="origin"/>
+                                <field name="release_year"/>
+                                <field name="total_quantity"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" placeholder="Description de la variété..."/>
+                            </page>
+                            <page string="Résistances">
+                                <field name="resistances" placeholder="Résistances aux maladies et parasites..."/>
+                            </page>
+                            <page string="Lots de Semences">
+                                <field name="seed_lot_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="level"/>
+                                        <field name="quantity"/>
+                                        <field name="status"/>
+                                        <field name="production_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Recherche Variétés -->
+        <record id="view_seed_variety_search" model="ir.ui.view">
+            <field name="name">seed.variety.search</field>
+            <field name="model">seed.variety</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Variétés">
+                    <field name="name" string="Variété" 
+                           filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                    <field name="crop_type"/>
+                    <field name="origin"/>
+                    
+                    <filter string="Riz" name="rice" domain="[('crop_type', '=', 'rice')]"/>
+                    <filter string="Maïs" name="maize" domain="[('crop_type', '=', 'maize')]"/>
+                    <filter string="Arachide" name="peanut" domain="[('crop_type', '=', 'peanut')]"/>
+                    
+                    <separator/>
+                    <filter string="Actives" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactives" name="inactive" domain="[('active', '=', False)]"/>
+                    
+                    <group expand="0" string="Grouper par">
+                        <filter string="Type de Culture" name="group_crop_type" 
+                                context="{'group_by': 'crop_type'}"/>
+                        <filter string="Origine" name="group_origin" 
+                                context="{'group_by': 'origin'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action Variétés -->
+        <record id="action_seed_variety" model="ir.actions.act_window">
+            <field name="name">Variétés de Semences</field>
+            <field name="res_model">seed.variety</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('active', '=', True)]</field>
+            <field name="context">{'default_active': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer votre première variété de semences
+                </p>
+                <p>
+                    Les variétés représentent les différents types de semences
+                    que vous gérez dans votre système de traçabilité.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
