@@ -172,6 +172,7 @@
                     <field name="seed_lot_id"/>
                     <field name="multiplier_id"/>
                     <field name="parcel_id"/>
+        
                     
                     <filter string="Planifiées" name="planned" domain="[('status', '=', 'planned')]"/>
                     <filter string="En Cours" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
