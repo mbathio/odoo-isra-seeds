@@ -159,7 +159,7 @@ class SeedLot(models.Model):
             else:
                 record.display_name = record.name or 'Nouveau Lot'
     
-  @api.depends('production_date', 'variety_id.crop_type')
+    @api.depends('production_date', 'variety_id.crop_type')
     def _compute_expiry_date(self):
         for record in self:
             if record.production_date:
@@ -181,8 +181,7 @@ class SeedLot(models.Model):
                     record.expiry_date = record.production_date + relativedelta(months=months)
                 except ImportError:
                     # Fallback si dateutil n'est pas disponible
-                    import datetime
-                    record.expiry_date = record.production_date + datetime.timedelta(days=months*30)
+                    record.expiry_date = record.production_date + timedelta(days=months*30)
                     
     @api.depends('child_lot_ids')
     def _compute_child_lot_count(self):
