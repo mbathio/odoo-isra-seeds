@@ -1,0 +1,31 @@
+{
+    "python.analysis.extraPaths": [
+        "./addons",
+        "/usr/lib/python3/dist-packages"
+    ],
+    "python.analysis.ignore": [
+        "**/node_modules",
+        "**/.venv"
+    ],
+    "python.analysis.diagnosticMode": "workspace",
+    "python.linting.enabled": false,
+    "python.analysis.autoImportCompletions": false,
+    "python.analysis.typeCheckingMode": "off",
+    "pylance.inlayHints.variableTypes": false,
+    "pylance.inlayHints.functionReturnTypes": false,
+    
+    // Ignorer les erreurs d'import Odoo
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none",
+        "reportMissingModuleSource": "none"
+    },
+    
+    // Configuration spécifique Odoo
+    "files.associations": {
+        "*.xml": "xml",
+        "*.py": "python"
+    },
+    
+    "xml.validation.enabled": true,
+    "xml.format.enabled": true
+}
