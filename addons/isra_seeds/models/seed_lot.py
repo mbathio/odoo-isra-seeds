@@ -159,7 +159,7 @@ class SeedLot(models.Model):
             else:
                 record.display_name = record.name or 'Nouveau Lot'
     
-    @api.depends('production_date', 'variety_id.crop_type')
+  @api.depends('production_date', 'variety_id.crop_type')
     def _compute_expiry_date(self):
         for record in self:
             if record.production_date:
@@ -172,12 +172,18 @@ class SeedLot(models.Model):
                     'cowpea': 18,
                     'millet': 24,
                 }
-                months = validity_months.get(record.variety_id.crop_type, 12)
+                crop_type = record.variety_id.crop_type if record.variety_id else 'rice'
+                months = validity_months.get(crop_type, 12)
                 
                 # Ajouter les mois à la date de production
-                from dateutil.relativedelta import relativedelta
-                record.expiry_date = record.production_date + relativedelta(months=months)
-    
+                try:
+                    from dateutil.relativedelta import relativedelta
+                    record.expiry_date = record.production_date + relativedelta(months=months)
+                except ImportError:
+                    # Fallback si dateutil n'est pas disponible
+                    import datetime
+                    record.expiry_date = record.production_date + datetime.timedelta(days=months*30)
+                    
     @api.depends('child_lot_ids')
     def _compute_child_lot_count(self):
         for record in self:

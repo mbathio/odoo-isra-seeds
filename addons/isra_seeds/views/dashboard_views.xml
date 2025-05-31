@@ -304,5 +304,18 @@
             <field name="view_id" ref="view_quality_analysis"/>
         </record>
 
+        <button type="button" class="btn btn-primary" onclick="window.open('/web#action=isra_seeds.action_seed_lot&amp;view_type=form', '_self')">
+                                            <i class="fa fa-plus"/> Nouveau Lot
+                                        </button>
+                                        <button type="button" class="btn btn-success" onclick="window.open('/web#action=isra_seeds.action_quality_control&amp;view_type=form', '_self')">
+                                            <i class="fa fa-clipboard-check"/> Nouveau Contrôle
+                                        </button>
+                                        <button type="button" class="btn btn-info" onclick="window.open('/web#action=isra_seeds.action_production&amp;view_type=form', '_self')">
+                                            <i class="fa fa-industry"/> Nouvelle Production
+                                        </button>
+                                        <button type="button" class="btn btn-warning" onclick="window.open('/web#action=isra_seeds.action_multiplier&amp;view_type=form', '_self')">
+                                            <i class="fa fa-user-plus"/> Nouveau Multiplicateur
+                                        </button>
+
     </data>
 </odoo>

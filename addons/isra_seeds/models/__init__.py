@@ -7,6 +7,7 @@ from . import multiplier
 from . import parcel
 from . import quality_control
 from . import production
+from . import weather_data
 
 # Modèles avancés - Phase 2 (à décommenter progressivement)
 # from . import stock_movement

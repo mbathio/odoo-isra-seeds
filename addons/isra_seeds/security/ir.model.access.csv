@@ -52,3 +52,7 @@ access_seed_production_issue_manager,seed.production.issue.manager,model_seed_pr
 access_seed_contract_user,seed.contract.user,model_seed_contract,group_seed_user,1,0,0,0
 access_seed_contract_manager,seed.contract.manager,model_seed_contract,group_seed_manager,1,1,1,1
 access_seed_contract_admin,seed.contract.admin,model_seed_contract,group_seed_admin,1,1,1,1
+
+access_seed_weather_data_user,seed.weather.data.user,model_seed_weather_data,group_seed_user,1,0,0,0
+access_seed_weather_data_technician,seed.weather.data.technician,model_seed_weather_data,group_seed_technician,1,1,1,0
+access_seed_weather_data_manager,seed.weather.data.manager,model_seed_weather_data,group_seed_manager,1,1,1,1
