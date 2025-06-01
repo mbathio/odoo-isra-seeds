@@ -4,6 +4,7 @@ from odoo import http, fields
 from odoo.http import request
 import json
 import logging
+from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -27,13 +28,14 @@ class SeedLotAPI(http.Controller):
             # Construction du domaine de recherche
             domain = [('active', '=', True)]
             
-            if search:
+                if search:
                 domain.extend([
                     '|', '|', '|',
                     ('name', 'ilike', search),
+                    ('qr_code', 'ilike', search),
+                    ('notes', 'ilike', search),
                     ('variety_id.name', 'ilike', search),
-                    ('multiplier_id.name', 'ilike', search),
-                    ('notes', 'ilike', search)
+                    ('multiplier_id.name', 'ilike', search)
                 ])
             
             if level:
@@ -43,7 +45,10 @@ class SeedLotAPI(http.Controller):
                 domain.append(('status', '=', status))
             
             if variety_id:
-                domain.append(('variety_id', '=', int(variety_id)))
+                try:
+                    domain.append(('variety_id', '=', int(variety_id)))
+                except ValueError:
+                    pass # Assurez-vous que variety_id est un entier
             
             if multiplier_id:
                 domain.append(('multiplier_id', '=', int(multiplier_id)))

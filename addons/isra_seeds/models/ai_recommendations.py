@@ -476,24 +476,28 @@ class SeedAI(models.Model):
         
         # Analyser les productions liées
         productions = lot.production_ids
+       # ...existing code...
         if productions:
             # Stress météorologique
-            weather_issues = sum(p.issue_ids.filtered(
-                lambda i: i.issue_type == 'weather'
-            ).mapped('yield_impact')) / 100 if productions else 0
-            
+            weather_issues = sum(
+                sum(prod.issue_ids.filtered(lambda i: i.issue_type == 'weather').mapped('yield_impact'))
+                for prod in productions
+            ) / 100
+
             factors['weather_stress'] = min(1.0, weather_issues)
-            
+
             # Pression parasitaire
-            disease_issues = sum(p.issue_ids.filtered(
-                lambda i: i.issue_type in ['disease', 'pest']
-            ).mapped('yield_impact')) / 100 if productions else 0
-            
+            disease_issues = sum(
+                sum(prod.issue_ids.filtered(lambda i: i.issue_type in ['disease', 'pest']).mapped('yield_impact'))
+                for prod in productions
+            ) / 100
+
             factors['disease_pressure'] = min(1.0, disease_issues)
-            
+
             # Qualité de gestion
             management_score = 1.0 - (len(productions.mapped('issue_ids')) / max(1, len(productions)) * 0.1)
             factors['management_quality'] = max(0.0, management_score)
+# ...existing code...
         
         # Âge du lot
         if lot.production_date:

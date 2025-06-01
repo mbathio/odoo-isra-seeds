@@ -350,4 +350,7 @@ class SeedNotificationSettings(models.Model):
     # Horaires préférés
     preferred_time = fields.Float('Heure Préférée', default=9.0)  # 9h00
     
-    @api.model
+@api.model
+def missing_function(self):
+    """Fonction manquante à implémenter"""
+    pass
