@@ -10,7 +10,6 @@
         * Les multiplicateurs et parcelles
         * Les contrôles qualité
         * Les productions et activités
-        * La génération de QR codes
     """,
     'category': 'Agriculture',
     'author': 'ISRA Saint-Louis',
@@ -29,7 +28,7 @@
         # Données de base
         'data/sequences.xml',
         
-        # Vues principales - dans l'ordre de dépendance
+        # Vues principales - simplifiées
         'views/seed_variety_views.xml',
         'views/seed_lot_views.xml',
         'views/multiplier_views.xml',
@@ -37,26 +36,14 @@
         'views/quality_control_views.xml',
         'views/production_views.xml',
         
-        # Vues système
-        'views/dashboard_views.xml',
-        'views/report_views.xml',
+        # Menu
         'views/menus.xml',
-        
-        # Données de démo
-        'data/demo_data.xml',
     ],
     'demo': [
         'data/demo_data.xml',
     ],
-    'assets': {
-        'web.assets_backend': [
-            'isra_seeds/static/src/css/isra_seeds.css',
-            'isra_seeds/static/src/js/qr_code_widget.js',
-        ],
-    },
     'installable': True,
     'application': True,
     'auto_install': False,
     'license': 'LGPL-3',
-
 }

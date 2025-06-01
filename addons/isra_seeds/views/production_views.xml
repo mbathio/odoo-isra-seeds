@@ -7,18 +7,12 @@
             <field name="name">seed.production.tree</field>
             <field name="model">seed.production</field>
             <field name="arch" type="xml">
-                <tree string="Productions de Semences" decoration-success="status=='completed'" 
-                      decoration-warning="status=='in_progress'" decoration-info="status=='planned'">
+                <tree string="Productions de Semences">
                     <field name="name"/>
                     <field name="seed_lot_id"/>
                     <field name="multiplier_id"/>
-                    <field name="parcel_id"/>
                     <field name="start_date"/>
-                    <field name="end_date"/>
-                    <field name="planned_quantity"/>
-                    <field name="actual_yield"/>
-                    <field name="yield_per_hectare"/>
-                    <field name="status" widget="badge"/>
+                    <field name="status"/>
                 </tree>
             </field>
         </record>
@@ -29,26 +23,7 @@
             <field name="model">seed.production</field>
             <field name="arch" type="xml">
                 <form string="Production de Semences">
-                    <header>
-                        <button name="action_start_production" type="object" string="Démarrer Production" 
-                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'planned')]}"/>
-                        <button name="action_complete_production" type="object" string="Terminer Production" 
-                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
-                        <field name="status" widget="statusbar" statusbar_visible="planned,in_progress,completed"/>
-                    </header>
-                    
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_activities" type="object" 
-                                    class="oe_stat_button" icon="fa-tasks">
-                                <field name="activity_count" widget="statinfo" string="Activités"/>
-                            </button>
-                            <button name="action_view_issues" type="object" 
-                                    class="oe_stat_button" icon="fa-exclamation-triangle">
-                                <field name="issue_count" widget="statinfo" string="Problèmes"/>
-                            </button>
-                        </div>
-                        
                         <div class="oe_title">
                             <h1>
                                 <field name="name"/>
@@ -59,207 +34,29 @@
                             <group>
                                 <field name="seed_lot_id"/>
                                 <field name="multiplier_id"/>
-                                <field name="parcel_id" domain="[('multiplier_id', '=', multiplier_id)]"/>
+                                <field name="parcel_id"/>
                             </group>
                             <group>
                                 <field name="start_date"/>
                                 <field name="end_date"/>
-                                <field name="duration_days"/>
+                                <field name="status"/>
                             </group>
                         </group>
                         
                         <group>
-                            <group string="Dates Agricoles">
+                            <group>
+                                <field name="planned_quantity"/>
+                                <field name="actual_yield"/>
+                            </group>
+                            <group>
                                 <field name="sowing_date"/>
                                 <field name="harvest_date"/>
                             </group>
-                            <group string="Quantités">
-                                <field name="planned_quantity"/>
-                                <field name="actual_yield"/>
-                                <field name="yield_per_hectare"/>
-                            </group>
                         </group>
                         
-                        <notebook>
-                            <page string="Activités" name="activities">
-                                <field name="activity_ids">
-                                    <tree>
-                                        <field name="activity_date"/>
-                                        <field name="activity_type"/>
-                                        <field name="description"/>
-                                        <field name="responsible_user_id"/>
-                                        <field name="cost"/>
-                                    </tree>
-                                    <form>
-                                        <group>
-                                            <group>
-                                                <field name="activity_date"/>
-                                                <field name="activity_type"/>
-                                                <field name="responsible_user_id"/>
-                                            </group>
-                                            <group>
-                                                <field name="cost"/>
-                                            </group>
-                                        </group>
-                                        <field name="description" placeholder="Description de l'activité..."/>
-                                        <field name="personnel" placeholder="Personnel impliqué..."/>
-                                        <field name="notes" placeholder="Notes..."/>
-                                    </form>
-                                </field>
-                            </page>
-                            <page string="Problèmes" name="issues">
-                                <field name="issue_ids">
-                                    <tree decoration-danger="severity=='critical'" decoration-warning="severity=='high'">
-                                        <field name="issue_date"/>
-                                        <field name="issue_type"/>
-                                        <field name="severity" widget="badge"/>
-                                        <field name="description"/>
-                                        <field name="resolved" widget="boolean_toggle"/>
-                                        <button name="action_resolve" type="object" string="Résoudre" 
-                                                attrs="{'invisible': [('resolved', '=', True)]}"/>
-                                    </tree>
-                                    <form>
-                                        <group>
-                                            <group>
-                                                <field name="issue_date"/>
-                                                <field name="issue_type"/>
-                                                <field name="severity"/>
-                                                <field name="reported_by"/>
-                                            </group>
-                                            <group>
-                                                <field name="resolved"/>
-                                                <field name="resolved_date" attrs="{'invisible': [('resolved', '=', False)]}"/>
-                                                <field name="estimated_cost"/>
-                                                <field name="actual_cost"/>
-                                                <field name="yield_impact"/>
-                                            </group>
-                                        </group>
-                                        <field name="description" placeholder="Description du problème..."/>
-                                        <field name="actions_taken" placeholder="Actions entreprises..."/>
-                                        <field name="resolution_notes" placeholder="Notes de résolution..." 
-                                               attrs="{'invisible': [('resolved', '=', False)]}"/>
-                                    </form>
-                                </field>
-                            </page>
-                            <page string="Conditions" name="conditions">
-                                <group>
-                                    <field name="weather_conditions" placeholder="Conditions météorologiques..."/>
-                                    <field name="cultural_practices" placeholder="Pratiques culturales utilisées..."/>
-                                </group>
-                            </page>
-                            <page string="Notes" name="notes">
-                                <field name="notes" placeholder="Notes générales..."/>
-                                <field name="problems_encountered" placeholder="Problèmes rencontrés..."/>
-                            </page>
-                        </notebook>
+                        <field name="notes" placeholder="Notes..."/>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
                 </form>
-            </field>
-        </record>
-
-        <!-- Vue Recherche Productions -->
-        <record id="view_production_search" model="ir.ui.view">
-            <field name="name">seed.production.search</field>
-            <field name="model">seed.production</field>
-            <field name="arch" type="xml">
-                <search string="Rechercher Productions">
-                    <field name="name"/>
-                    <field name="seed_lot_id"/>
-                    <field name="multiplier_id"/>
-                    <field name="parcel_id"/>
-        
-                    
-                    <filter string="Planifiées" name="planned" domain="[('status', '=', 'planned')]"/>
-                    <filter string="En Cours" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
-                    <filter string="Terminées" name="completed" domain="[('status', '=', 'completed')]"/>
-                    
-                    <separator/>
-                    <filter string="Cette Année" name="this_year" 
-                            domain="[('start_date', '&gt;=', datetime.date.today().replace(month=1, day=1))]"/>
-                    <filter string="Ce Mois" name="this_month" 
-                            domain="[('start_date', '&gt;=', datetime.date.today().replace(day=1))]"/>
-                    
-                    <group expand="0" string="Grouper par">
-                        <filter string="Statut" name="group_status" context="{'group_by': 'status'}"/>
-                        <filter string="Multiplicateur" name="group_multiplier" context="{'group_by': 'multiplier_id'}"/>
-                        <filter string="Variété" name="group_variety" context="{'group_by': 'seed_lot_id.variety_id'}"/>
-                        <filter string="Mois" name="group_month" context="{'group_by': 'start_date:month'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <!-- Vue Kanban Productions -->
-        <record id="view_production_kanban" model="ir.ui.view">
-            <field name="name">seed.production.kanban</field>
-            <field name="model">seed.production</field>
-            <field name="arch" type="xml">
-                <kanban default_group_by="status">
-                    <field name="name"/>
-                    <field name="seed_lot_id"/>
-                    <field name="multiplier_id"/>
-                    <field name="start_date"/>
-                    <field name="status"/>
-                    <field name="planned_quantity"/>
-                    <field name="actual_yield"/>
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_card_header">
-                                    <div class="o_kanban_card_header_title">
-                                        <div class="o_primary">
-                                            <strong><field name="name"/></strong>
-                                        </div>
-                                        <div class="o_secondary">
-                                            <field name="seed_lot_id"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_content">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <strong>Multiplicateur:</strong><br/>
-                                            <field name="multiplier_id"/>
-                                        </div>
-                                        <div class="col-6">
-                                            <strong>Début:</strong><br/>
-                                            <field name="start_date"/>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <strong>Prévu:</strong> <field name="planned_quantity"/> kg
-                                        </div>
-                                        <div class="col-6">
-                                            <strong>Réel:</strong> <field name="actual_yield"/> kg
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-
-        <!-- Vue Calendrier Productions -->
-        <record id="view_production_calendar" model="ir.ui.view">
-            <field name="name">seed.production.calendar</field>
-            <field name="model">seed.production</field>
-            <field name="arch" type="xml">
-                <calendar string="Calendrier des Productions" 
-                          date_start="start_date" 
-                          date_stop="end_date"
-                          color="status">
-                    <field name="name"/>
-                    <field name="multiplier_id"/>
-                    <field name="seed_lot_id"/>
-                </calendar>
             </field>
         </record>
 
@@ -267,118 +64,44 @@
         <record id="action_production" model="ir.actions.act_window">
             <field name="name">Productions de Semences</field>
             <field name="res_model">seed.production</field>
-            <field name="view_mode">kanban,tree,form,calendar</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Planifier votre première production
-                </p>
-                <p>
-                    Les productions permettent de suivre le processus
-                    de multiplication de vos semences chez les multiplicateurs.
-                </p>
-            </field>
+            <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Vue Liste Contrats -->
+        <!-- Vue Contrats -->
         <record id="view_contract_tree" model="ir.ui.view">
             <field name="name">seed.contract.tree</field>
             <field name="model">seed.contract</field>
             <field name="arch" type="xml">
-                <tree string="Contrats de Multiplication" decoration-success="status=='active'" 
-                      decoration-info="status=='completed'" decoration-muted="status=='draft'">
+                <tree string="Contrats">
                     <field name="name"/>
                     <field name="multiplier_id"/>
                     <field name="variety_id"/>
-                    <field name="seed_level"/>
-                    <field name="expected_quantity"/>
-                    <field name="actual_quantity"/>
-                    <field name="start_date"/>
-                    <field name="end_date"/>
-                    <field name="status" widget="badge"/>
-                    <field name="total_amount"/>
+                    <field name="status"/>
                 </tree>
             </field>
         </record>
 
-        <!-- Vue Formulaire Contrats -->
         <record id="view_contract_form" model="ir.ui.view">
             <field name="name">seed.contract.form</field>
             <field name="model">seed.contract</field>
             <field name="arch" type="xml">
-                <form string="Contrat de Multiplication">
-                    <header>
-                        <button name="action_activate" type="object" string="Activer" 
-                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
-                        <button name="action_complete" type="object" string="Terminer" 
-                                class="oe_highlight" attrs="{'invisible': [('status', '!=', 'active')]}"/>
-                        <field name="status" widget="statusbar" statusbar_visible="draft,active,completed"/>
-                    </header>
-                    
+                <form string="Contrat">
                     <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
-                        
                         <group>
-                            <group>
-                                <field name="multiplier_id"/>
-                                <field name="variety_id"/>
-                                <field name="seed_level"/>
-                            </group>
-                            <group>
-                                <field name="start_date"/>
-                                <field name="end_date"/>
-                                <field name="unit_price"/>
-                            </group>
+                            <field name="name"/>
+                            <field name="multiplier_id"/>
+                            <field name="variety_id"/>
+                            <field name="status"/>
                         </group>
-                        
-                        <group>
-                            <group string="Quantités">
-                                <field name="expected_quantity"/>
-                                <field name="actual_quantity"/>
-                            </group>
-                            <group string="Financier">
-                                <field name="total_amount"/>
-                                <field name="advance_payment"/>
-                            </group>
-                        </group>
-                        
-                        <notebook>
-                            <page string="Conditions">
-                                <field name="payment_terms" placeholder="Conditions de paiement..."/>
-                                <field name="quality_requirements" placeholder="Exigences qualité..."/>
-                                <field name="delivery_terms" placeholder="Conditions de livraison..."/>
-                            </page>
-                            <page string="Notes">
-                                <field name="notes" placeholder="Notes du contrat..."/>
-                            </page>
-                        </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
                 </form>
             </field>
         </record>
 
-        <!-- Action Contrats -->
         <record id="action_contract" model="ir.actions.act_window">
-            <field name="name">Contrats de Multiplication</field>
+            <field name="name">Contrats</field>
             <field name="res_model">seed.contract</field>
             <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Créer votre premier contrat
-                </p>
-                <p>
-                    Les contrats définissent les accords de multiplication
-                    avec vos partenaires multiplicateurs.
-                </p>
-            </field>
         </record>
 
     </data>

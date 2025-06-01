@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:13
@@ -6,11 +8,13 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: odoo
       POSTGRES_PASSWORD: odoo
+      POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     restart: unless-stopped
+    command: postgres -c max_connections=200
 
   odoo:
     image: odoo:16.0
@@ -23,13 +27,13 @@ services:
       - HOST=postgres
       - USER=odoo
       - PASSWORD=odoo
+      - DB_MAXCONN=64
     volumes:
       - ./addons:/mnt/extra-addons
       - ./config:/etc/odoo
       - odoo_data:/var/lib/odoo
-      - ./addons/oca-web:/mnt/extra-addons/oca-web
-
     restart: unless-stopped
+    command: odoo -c /etc/odoo/odoo.conf
 
 volumes:
   postgres_data:
