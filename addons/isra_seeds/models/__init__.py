@@ -6,7 +6,6 @@ from . import seed_lot
 from . import multiplier
 from . import parcel
 from . import quality_control
-from . import production
 from . import weather_service
 
 # Autres modèles commentés temporairement
