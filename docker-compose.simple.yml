@@ -1,0 +1,36 @@
+﻿# docker-compose.fixed.yml - Configuration corrigée sans healthcheck
+services:
+  postgres:
+    image: postgres:15
+    container_name: isra_postgres
+    environment:
+      - POSTGRES_DB=isra_production
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=${ODOO_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  odoo:
+    image: odoo:17.0
+    container_name: isra_odoo
+    depends_on:
+      - postgres
+    environment:
+      - HOST=postgres
+      - USER=odoo
+      - PASSWORD=${ODOO_DB_PASSWORD}
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - odoo_data:/var/lib/odoo
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  odoo_data:
+    driver: local

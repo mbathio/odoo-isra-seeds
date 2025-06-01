@@ -1,83 +1,50 @@
-# docker-compose.prod.yml
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-      - odoo-web-data:/var/lib/odoo
-    depends_on:
-      - web
-    restart: unless-stopped
-
-  web:
-    image: odoo:17.0
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      - HOST=db
-      - USER=odoo_prod
-      - PASSWORD=${ODOO_DB_PASSWORD}
-    volumes:
-      - odoo-web-data:/var/lib/odoo
-      - ./config:/etc/odoo
-      - ./addons:/mnt/extra-addons
-      - ./logs:/var/log/odoo
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-          cpus: "2.0"
-
-  db:
+  postgres:
     image: postgres:15
+    container_name: isra_postgres
     environment:
       - POSTGRES_DB=isra_production
-      - POSTGRES_USER=odoo_prod
-      - POSTGRES_PASSWORD=${ODOO_DB_PASSWORD}
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=$${ODOO_DB_PASSWORD}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - odoo-db-data:/var/lib/postgresql/data/pgdata
+      - postgres_data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U odoo_prod"]
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
       interval: 10s
       timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-          cpus: "1.0"
+      retries: 3
 
-  backup:
-    image: postgres:15
+  odoo:
+    image: odoo:17.0
+    container_name: isra_odoo
     depends_on:
-      - db
+      postgres:
+        condition: service_healthy
     environment:
-      - PGPASSWORD=${ODOO_DB_PASSWORD}
+      - HOST=postgres
+      - USER=odoo
+      - PASSWORD=$${ODOO_DB_PASSWORD}
+      - POSTGRES_DB=isra_production
+    ports:
+      - "8069:8069"
     volumes:
-      - ./backups:/backups
-    command: |
-      sh -c "
-        while true; do
-          pg_dump -h db -U odoo_prod isra_production > /backups/backup_$(date +%Y%m%d_%H%M%S).sql
-          find /backups -name '*.sql' -mtime +7 -delete
-          sleep 86400
-        done
-      "
+      - ./addons:/mnt/extra-addons:ro
+      - ./config:/etc/odoo:ro
+      - odoo_data:/var/lib/odoo
     restart: unless-stopped
+    command: odoo -i base -d isra_production --without-demo=all
 
 volumes:
-  odoo-web-data:
-  odoo-db-data:
+  postgres_data:
+    driver: local
+  odoo_data:
+    driver: local
 
 networks:
   default:
