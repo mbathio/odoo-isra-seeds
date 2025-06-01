@@ -262,3 +262,6 @@ class SeedQualityControl(models.Model):
                 if record.seed_lot_id.variety_id.crop_type == 'rice':
                     if record.germination_rate < 80:
                         raise ValidationError("Taux de germination insuffisant pour le riz")
+                    
+
+    

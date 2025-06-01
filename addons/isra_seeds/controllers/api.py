@@ -28,9 +28,10 @@ class SeedLotAPI(http.Controller):
             # Construction du domaine de recherche
             domain = [('active', '=', True)]
             
-                if search:
+            # ✅ CORRECTION: Indentation fixée
+            if search:
                 domain.extend([
-                    '|', '|', '|',
+                    '|', '|', '|', '|',
                     ('name', 'ilike', search),
                     ('qr_code', 'ilike', search),
                     ('notes', 'ilike', search),
@@ -51,36 +52,57 @@ class SeedLotAPI(http.Controller):
                     pass # Assurez-vous que variety_id est un entier
             
             if multiplier_id:
-                domain.append(('multiplier_id', '=', int(multiplier_id)))
+                try:
+                    domain.append(('multiplier_id', '=', int(multiplier_id)))
+                except ValueError:
+                    pass
             
-            # Récupération des lots
+            # ✅ AMÉLIORATION: Récupération optimisée avec préchargement
             SeedLot = request.env['seed.lot']
             
             # Total pour pagination
             total = SeedLot.search_count(domain)
             
-            # Lots avec pagination
+            # ✅ OPTIMISATION: Précharger les relations critiques
             offset = (page - 1) * page_size
             lots = SeedLot.search(
                 domain,
                 limit=page_size,
                 offset=offset,
                 order=f'{sort_by} {sort_order}'
-            )
+            ).with_context(prefetch_fields=True)
             
-            # Formatage des données
+            # ✅ OPTIMISATION: Batch loading des contrôles qualité pour éviter N+1
+            lot_ids = lots.ids
+            if lot_ids:
+                quality_controls = request.env['seed.quality.control'].search([
+                    ('seed_lot_id', 'in', lot_ids)
+                ])
+                
+                # Grouper par lot_id
+                qc_by_lot = {}
+                for qc in quality_controls:
+                    if qc.seed_lot_id.id not in qc_by_lot:
+                        qc_by_lot[qc.seed_lot_id.id] = []
+                    qc_by_lot[qc.seed_lot_id.id].append(qc)
+            else:
+                qc_by_lot = {}
+            
+            # Formatage des données optimisé
             data = []
             for lot in lots:
-                # Dernière qualité control
+                # ✅ OPTIMISATION: Utiliser les données préchargées
                 last_quality = None
-                if lot.quality_control_ids:
-                    qc = lot.quality_control_ids.sorted('control_date', reverse=True)[0]
+                lot_qcs = qc_by_lot.get(lot.id, [])
+                if lot_qcs:
+                    # Trier et prendre le plus récent
+                    latest_qc = max(lot_qcs, key=lambda x: x.control_date or fields.Date.min)
                     last_quality = {
-                        'id': qc.id,
-                        'result': qc.result,
-                        'germination_rate': qc.germination_rate,
-                        'variety_purity': qc.variety_purity,
-                        'control_date': qc.control_date.isoformat() if qc.control_date else None
+                        'id': latest_qc.id,
+                        'result': latest_qc.result,
+                        'germination_rate': latest_qc.germination_rate,
+                        'variety_purity': latest_qc.variety_purity,
+                        'control_date': latest_qc.control_date.isoformat() if latest_qc.control_date else None
                     }
                 
                 lot_data = {
@@ -131,12 +153,12 @@ class SeedLotAPI(http.Controller):
             }
             
             return request.make_response(
-                json.dumps(response),
+                json.dumps(response, default=str),
                 headers={'Content-Type': 'application/json'}
             )
             
         except Exception as e:
-            _logger.error(f"Erreur API get_seed_lots: {str(e)}")
+            _logger.error(f"Erreur API get_seed_lots: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({
                     'success': False,
@@ -262,12 +284,12 @@ class SeedLotAPI(http.Controller):
                 json.dumps({
                     'success': True,
                     'data': lot_data
-                }),
+                }, default=str),
                 headers={'Content-Type': 'application/json'}
             )
             
         except Exception as e:
-            _logger.error(f"Erreur API get_seed_lot_by_id: {str(e)}")
+            _logger.error(f"Erreur API get_seed_lot_by_id: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({
                     'success': False,
@@ -292,6 +314,21 @@ class SeedLotAPI(http.Controller):
                         'success': False,
                         'message': f'Champ requis manquant: {field}'
                     }
+            
+            # Validation supplémentaire
+            if data['quantity'] <= 0:
+                return {
+                    'success': False,
+                    'message': 'La quantité doit être positive'
+                }
+            
+            # Validation de la variété
+            variety = request.env['seed.variety'].browse(data['variety_id'])
+            if not variety.exists():
+                return {
+                    'success': False,
+                    'message': 'Variété invalide'
+                }
             
             # Création du lot
             lot_vals = {
@@ -319,7 +356,7 @@ class SeedLotAPI(http.Controller):
             }
             
         except Exception as e:
-            _logger.error(f"Erreur API create_seed_lot: {str(e)}")
+            _logger.error(f"Erreur API create_seed_lot: {str(e)}", exc_info=True)
             return {
                 'success': False,
                 'message': 'Erreur lors de la création du lot',
@@ -372,12 +409,12 @@ class VarietyAPI(http.Controller):
                 json.dumps({
                     'success': True,
                     'data': data
-                }),
+                }, default=str),
                 headers={'Content-Type': 'application/json'}
             )
             
         except Exception as e:
-            _logger.error(f"Erreur API get_varieties: {str(e)}")
+            _logger.error(f"Erreur API get_varieties: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({
                     'success': False,
@@ -428,12 +465,12 @@ class MultiplierAPI(http.Controller):
                 json.dumps({
                     'success': True,
                     'data': data
-                }),
+                }, default=str),
                 headers={'Content-Type': 'application/json'}
             )
             
         except Exception as e:
-            _logger.error(f"Erreur API get_multipliers: {str(e)}")
+            _logger.error(f"Erreur API get_multipliers: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({
                     'success': False,
@@ -465,7 +502,7 @@ class AuthAPI(http.Controller):
             }
             
         except Exception as e:
-            _logger.error(f"Erreur API get_current_user: {str(e)}")
+            _logger.error(f"Erreur API get_current_user: {str(e)}", exc_info=True)
             return {
                 'success': False,
                 'message': 'Erreur lors de la récupération de l\'utilisateur',
@@ -497,6 +534,19 @@ class QualityControlAPI(http.Controller):
                     'message': 'Lot de semences non trouvé'
                 }
             
+            # Validation des valeurs
+            if not (0 <= data['germination_rate'] <= 100):
+                return {
+                    'success': False,
+                    'message': 'Le taux de germination doit être entre 0 et 100%'
+                }
+            
+            if not (0 <= data['variety_purity'] <= 100):
+                return {
+                    'success': False,
+                    'message': 'La pureté variétale doit être entre 0 et 100%'
+                }
+            
             # Création du contrôle qualité
             qc_vals = {
                 'seed_lot_id': int(data['lot_id']),
@@ -524,7 +574,7 @@ class QualityControlAPI(http.Controller):
             }
             
         except Exception as e:
-            _logger.error(f"Erreur API create_quality_control: {str(e)}")
+            _logger.error(f"Erreur API create_quality_control: {str(e)}", exc_info=True)
             return {
                 'success': False,
                 'message': 'Erreur lors de la création du contrôle qualité',
@@ -553,10 +603,11 @@ class StatisticsAPI(http.Controller):
                     ('level', '=', level),
                     ('active', '=', True)
                 ])
-                total_quantity = sum(request.env['seed.lot'].search([
+                lots = request.env['seed.lot'].search([
                     ('level', '=', level),
                     ('active', '=', True)
-                ]).mapped('quantity'))
+                ])
+                total_quantity = sum(lots.mapped('quantity'))
                 
                 levels_stats[level] = {
                     'count': count,
@@ -601,12 +652,12 @@ class StatisticsAPI(http.Controller):
                 json.dumps({
                     'success': True,
                     'data': data
-                }),
+                }, default=str),
                 headers={'Content-Type': 'application/json'}
             )
             
         except Exception as e:
-            _logger.error(f"Erreur API get_dashboard_stats: {str(e)}")
+            _logger.error(f"Erreur API get_dashboard_stats: {str(e)}", exc_info=True)
             return request.make_response(
                 json.dumps({
                     'success': False,

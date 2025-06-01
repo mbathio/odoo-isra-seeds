@@ -226,7 +226,7 @@ class SeedAuditLog(models.Model):
             ]
         }
 
-# Mixin pour ajouter l'audit automatique aux modèles
+# ✅ CORRECTION: Mixin pour ajouter l'audit automatique aux modèles
 class AuditMixin(models.AbstractModel):
     _name = 'seed.audit.mixin'
     _description = 'Mixin pour Audit Automatique'
@@ -250,11 +250,15 @@ class AuditMixin(models.AbstractModel):
     
     def write(self, vals):
         """Override write pour logger les modifications"""
+        old_values = {}
         if self._should_audit():
             # Capturer les anciennes valeurs
-            old_values = {}
             for record in self:
-                old_values[record.id] = {field: getattr(record, field) for field in vals.keys() if hasattr(record, field)}
+                old_values[record.id] = {
+                    field: getattr(record, field, None) 
+                    for field in vals.keys() 
+                    if hasattr(record, field)
+                }
         
         result = super().write(vals)
         
@@ -277,9 +281,13 @@ class AuditMixin(models.AbstractModel):
         if self._should_audit():
             for record in self:
                 # Capturer les valeurs avant suppression
-                values = {field.name: getattr(record, field.name) 
-                         for field in record._fields.values() 
-                         if not field.compute and hasattr(record, field.name)}
+                values = {}
+                for field in record._fields.values():
+                    if not field.compute and hasattr(record, field.name):
+                        try:
+                            values[field.name] = getattr(record, field.name)
+                        except:
+                            pass  # Ignorer les erreurs d'accès
                 
                 self.env['seed.audit.log'].log_action(
                     model_name=self._name,
@@ -314,22 +322,18 @@ class AuditMixin(models.AbstractModel):
         
         return criticality_map.get(operation, 'medium')
 
-# Extension des modèles existants pour l'audit
-class SeedLotAudit(models.Model):
+# ✅ CORRECTION: Extension des modèles existants pour l'audit - Héritage propre
+class SeedLot(models.Model):
     _inherit = ['seed.lot', 'seed.audit.mixin']
-    _name = 'seed.lot'
 
-class SeedQualityControlAudit(models.Model):
+class SeedQualityControl(models.Model):
     _inherit = ['seed.quality.control', 'seed.audit.mixin']
-    _name = 'seed.quality.control'
 
-class SeedProductionAudit(models.Model):
+class SeedProduction(models.Model):
     _inherit = ['seed.production', 'seed.audit.mixin']
-    _name = 'seed.production'
 
-class SeedVarietyAudit(models.Model):
+class SeedVariety(models.Model):
     _inherit = ['seed.variety', 'seed.audit.mixin']
-    _name = 'seed.variety'
 
 # Signature électronique pour certificats
 class SeedDigitalSignature(models.Model):

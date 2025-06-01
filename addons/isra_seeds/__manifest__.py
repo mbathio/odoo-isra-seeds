@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+
 {
-    'name': 'ISRA - Traçabilité des Semences',
+        'name': 'ISRA - Traçabilité des Semences',
     'version': '16.0.1.0.0',
     'summary': 'Système de traçabilité des semences pour l\'ISRA Saint-Louis',
     'description': """
@@ -20,6 +20,9 @@
         'web',
         'contacts',
     ],
+    'external_dependencies': {
+        'python': ['qrcode', 'dateutil', 'PIL'],
+    },
     'data': [
         # Sécurité - doit être en premier
         'security/groups.xml',
@@ -27,7 +30,8 @@
         
         # Données de base
         'data/sequences.xml',
-        
+        'data/email_templates.xml',
+        'data/cron_jobs.xml',
         # Vues principales - simplifiées
         'views/seed_variety_views.xml',
         'views/seed_lot_views.xml',
@@ -36,14 +40,31 @@
         'views/quality_control_views.xml',
         'views/production_views.xml',
         
+         # Vues avancées
+        'views/dashboard_views.xml',
+        'views/mobile_views.xml',
+        'views/report_views.xml',
+        'views/settings_views.xml',
+        'views/wizard_views.xml',
+
         # Menu
         'views/menus.xml',
     ],
     'demo': [
         'data/demo_data.xml',
     ],
+
+    'assets': {
+        'web.assets_backend': [
+            'isra_seeds/static/src/css/isra_seeds.css',
+            'isra_seeds/static/src/js/qr_code_widget.js',
+        ],
+    },
+
+    'init_xml': [],
+    'update_xml': [], 
     'installable': True,
     'application': True,
     'auto_install': False,
-    'license': 'LGPL-3',
+    'license': 'LGPL-3'
 }

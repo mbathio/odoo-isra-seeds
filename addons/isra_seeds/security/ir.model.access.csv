@@ -1,30 +1,160 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+# ============================================================================
+# MODÈLES DE BASE
+# ============================================================================
+
+# Variétés de semences
 access_seed_variety_user,seed.variety.user,model_seed_variety,group_seed_user,1,0,0,0
+access_seed_variety_technician,seed.variety.technician,model_seed_variety,group_seed_technician,1,0,0,0
+access_seed_variety_researcher,seed.variety.researcher,model_seed_variety,group_seed_researcher,1,1,1,0
 access_seed_variety_manager,seed.variety.manager,model_seed_variety,group_seed_manager,1,1,1,1
 
+# Lots de semences
 access_seed_lot_user,seed.lot.user,model_seed_lot,group_seed_user,1,0,0,0
+access_seed_lot_technician,seed.lot.technician,model_seed_lot,group_seed_technician,1,1,1,0
+access_seed_lot_researcher,seed.lot.researcher,model_seed_lot,group_seed_researcher,1,1,1,0
 access_seed_lot_manager,seed.lot.manager,model_seed_lot,group_seed_manager,1,1,1,1
 
+# Parcelles agricoles
 access_agricultural_parcel_user,agricultural.parcel.user,model_agricultural_parcel,group_seed_user,1,0,0,0
+access_agricultural_parcel_technician,agricultural.parcel.technician,model_agricultural_parcel,group_seed_technician,1,1,1,0
 access_agricultural_parcel_manager,agricultural.parcel.manager,model_agricultural_parcel,group_seed_manager,1,1,1,1
 
+# Analyses de sol
+access_agricultural_soil_analysis_user,agricultural.soil.analysis.user,model_agricultural_soil_analysis,group_seed_user,1,0,0,0
+access_agricultural_soil_analysis_technician,agricultural.soil.analysis.technician,model_agricultural_soil_analysis,group_seed_technician,1,1,1,0
+access_agricultural_soil_analysis_manager,agricultural.soil.analysis.manager,model_agricultural_soil_analysis,group_seed_manager,1,1,1,1
+
+# Cultures précédentes
+access_agricultural_previous_crop_user,agricultural.previous.crop.user,model_agricultural_previous_crop,group_seed_user,1,0,0,0
+access_agricultural_previous_crop_technician,agricultural.previous.crop.technician,model_agricultural_previous_crop,group_seed_technician,1,1,1,0
+access_agricultural_previous_crop_manager,agricultural.previous.crop.manager,model_agricultural_previous_crop,group_seed_manager,1,1,1,1
+
+# Contrôles qualité
 access_seed_quality_control_user,seed.quality.control.user,model_seed_quality_control,group_seed_user,1,0,0,0
+access_seed_quality_control_technician,seed.quality.control.technician,model_seed_quality_control,group_seed_technician,1,1,1,0
+access_seed_quality_control_inspector,seed.quality.control.inspector,model_seed_quality_control,group_seed_inspector,1,1,1,0
 access_seed_quality_control_manager,seed.quality.control.manager,model_seed_quality_control,group_seed_manager,1,1,1,1
 
+# Productions
 access_seed_production_user,seed.production.user,model_seed_production,group_seed_user,1,0,0,0
+access_seed_production_technician,seed.production.technician,model_seed_production,group_seed_technician,1,1,1,0
 access_seed_production_manager,seed.production.manager,model_seed_production,group_seed_manager,1,1,1,1
 
+# Activités de production
 access_seed_production_activity_user,seed.production.activity.user,model_seed_production_activity,group_seed_user,1,0,0,0
+access_seed_production_activity_technician,seed.production.activity.technician,model_seed_production_activity,group_seed_technician,1,1,1,0
 access_seed_production_activity_manager,seed.production.activity.manager,model_seed_production_activity,group_seed_manager,1,1,1,1
 
+# Intrants de production
 access_seed_production_input_user,seed.production.input.user,model_seed_production_input,group_seed_user,1,0,0,0
+access_seed_production_input_technician,seed.production.input.technician,model_seed_production_input,group_seed_technician,1,1,1,0
 access_seed_production_input_manager,seed.production.input.manager,model_seed_production_input,group_seed_manager,1,1,1,1
 
+# Problèmes de production
 access_seed_production_issue_user,seed.production.issue.user,model_seed_production_issue,group_seed_user,1,0,0,0
+access_seed_production_issue_technician,seed.production.issue.technician,model_seed_production_issue,group_seed_technician,1,1,1,0
 access_seed_production_issue_manager,seed.production.issue.manager,model_seed_production_issue,group_seed_manager,1,1,1,1
 
+# Contrats
 access_seed_contract_user,seed.contract.user,model_seed_contract,group_seed_user,1,0,0,0
 access_seed_contract_manager,seed.contract.manager,model_seed_contract,group_seed_manager,1,1,1,1
 
+# Données météorologiques
 access_seed_weather_data_user,seed.weather.data.user,model_seed_weather_data,group_seed_user,1,0,0,0
+access_seed_weather_data_technician,seed.weather.data.technician,model_seed_weather_data,group_seed_technician,1,1,1,0
 access_seed_weather_data_manager,seed.weather.data.manager,model_seed_weather_data,group_seed_manager,1,1,1,1
+
+# ============================================================================
+# ✅ CORRECTION: MODÈLES AVANCÉS - PERMISSIONS AJOUTÉES
+# ============================================================================
+
+# Système d'alertes
+access_seed_alert_user,seed.alert.user,model_seed_alert,group_seed_user,1,0,0,0
+access_seed_alert_technician,seed.alert.technician,model_seed_alert,group_seed_technician,1,1,0,0
+access_seed_alert_inspector,seed.alert.inspector,model_seed_alert,group_seed_inspector,1,1,1,0
+access_seed_alert_manager,seed.alert.manager,model_seed_alert,group_seed_manager,1,1,1,1
+
+# Paramètres de notification
+access_seed_notification_settings_user,seed.notification.settings.user,model_seed_notification_settings,group_seed_user,1,1,1,0
+access_seed_notification_settings_manager,seed.notification.settings.manager,model_seed_notification_settings,group_seed_manager,1,1,1,1
+
+# Logs d'audit
+access_seed_audit_log_user,seed.audit.log.user,model_seed_audit_log,group_seed_user,1,0,0,0
+access_seed_audit_log_inspector,seed.audit.log.inspector,model_seed_audit_log,group_seed_inspector,1,0,0,0
+access_seed_audit_log_manager,seed.audit.log.manager,model_seed_audit_log,group_seed_manager,1,1,0,0
+access_seed_audit_log_admin,seed.audit.log.admin,model_seed_audit_log,group_seed_admin,1,1,1,1
+
+# Signatures électroniques
+access_seed_digital_signature_user,seed.digital.signature.user,model_seed_digital_signature,group_seed_user,1,0,0,0
+access_seed_digital_signature_inspector,seed.digital.signature.inspector,model_seed_digital_signature,group_seed_inspector,1,1,1,0
+access_seed_digital_signature_manager,seed.digital.signature.manager,model_seed_digital_signature,group_seed_manager,1,1,1,1
+
+# Vérifications de conformité
+access_seed_compliance_check_user,seed.compliance.check.user,model_seed_compliance_check,group_seed_user,1,0,0,0
+access_seed_compliance_check_inspector,seed.compliance.check.inspector,model_seed_compliance_check,group_seed_inspector,1,1,1,0
+access_seed_compliance_check_manager,seed.compliance.check.manager,model_seed_compliance_check,group_seed_manager,1,1,1,1
+
+# Éléments de conformité
+access_seed_compliance_item_user,seed.compliance.item.user,model_seed_compliance_item,group_seed_user,1,0,0,0
+access_seed_compliance_item_inspector,seed.compliance.item.inspector,model_seed_compliance_item,group_seed_inspector,1,1,1,0
+access_seed_compliance_item_manager,seed.compliance.item.manager,model_seed_compliance_item,group_seed_manager,1,1,1,1
+
+# Actions correctives
+access_seed_corrective_action_user,seed.corrective.action.user,model_seed_corrective_action,group_seed_user,1,0,0,0
+access_seed_corrective_action_technician,seed.corrective.action.technician,model_seed_corrective_action,group_seed_technician,1,1,1,0
+access_seed_corrective_action_manager,seed.corrective.action.manager,model_seed_corrective_action,group_seed_manager,1,1,1,1
+
+# Mouvements de stock
+access_seed_stock_move_user,seed.stock.move.user,model_seed_stock_move,group_seed_user,1,0,0,0
+access_seed_stock_move_technician,seed.stock.move.technician,model_seed_stock_move,group_seed_technician,1,1,1,0
+access_seed_stock_move_manager,seed.stock.move.manager,model_seed_stock_move,group_seed_manager,1,1,1,1
+
+# Emplacements de stock
+access_seed_stock_location_user,seed.stock.location.user,model_seed_stock_location,group_seed_user,1,0,0,0
+access_seed_stock_location_technician,seed.stock.location.technician,model_seed_stock_location,group_seed_technician,1,1,1,0
+access_seed_stock_location_manager,seed.stock.location.manager,model_seed_stock_location,group_seed_manager,1,1,1,1
+
+# Rapports
+access_seed_report_user,seed.report.user,model_seed_report,group_seed_user,1,0,0,0
+access_seed_report_researcher,seed.report.researcher,model_seed_report,group_seed_researcher,1,1,1,0
+access_seed_report_manager,seed.report.manager,model_seed_report,group_seed_manager,1,1,1,1
+
+# KPI
+access_seed_kpi_user,seed.kpi.user,model_seed_kpi,group_seed_user,1,0,0,0
+access_seed_kpi_researcher,seed.kpi.researcher,model_seed_kpi,group_seed_researcher,1,1,1,0
+access_seed_kpi_manager,seed.kpi.manager,model_seed_kpi,group_seed_manager,1,1,1,1
+
+# IA et recommandations
+access_seed_ai_user,seed.ai.user,model_seed_ai,group_seed_user,1,0,0,0
+access_seed_ai_researcher,seed.ai.researcher,model_seed_ai,group_seed_researcher,1,1,0,0
+access_seed_ai_manager,seed.ai.manager,model_seed_ai,group_seed_manager,1,1,1,0
+
+# ============================================================================
+# ASSISTANTS (WIZARDS)
+# ============================================================================
+
+# Assistant création lots en masse
+access_seed_bulk_lot_wizard_technician,seed.bulk.lot.wizard.technician,model_seed_bulk_lot_wizard,group_seed_technician,1,1,1,1
+access_seed_bulk_lot_wizard_manager,seed.bulk.lot.wizard.manager,model_seed_bulk_lot_wizard,group_seed_manager,1,1,1,1
+
+# Assistant contrôle qualité rapide
+access_seed_quick_qc_wizard_inspector,seed.quick.qc.wizard.inspector,model_seed_quick_qc_wizard,group_seed_inspector,1,1,1,1
+access_seed_quick_qc_wizard_manager,seed.quick.qc.wizard.manager,model_seed_quick_qc_wizard,group_seed_manager,1,1,1,1
+
+# Assistant import de données
+access_seed_data_import_wizard_manager,seed.data.import.wizard.manager,model_seed_data_import_wizard,group_seed_manager,1,1,1,1
+access_seed_data_import_wizard_admin,seed.data.import.wizard.admin,model_seed_data_import_wizard,group_seed_admin,1,1,1,1
+
+# Assistant export de données
+access_seed_data_export_wizard_user,seed.data.export.wizard.user,model_seed_data_export_wizard,group_seed_user,1,1,1,1
+access_seed_data_export_wizard_manager,seed.data.export.wizard.manager,model_seed_data_export_wizard,group_seed_manager,1,1,1,1
+
+# Assistant génération QR
+access_seed_qr_generator_wizard_technician,seed.qr.generator.wizard.technician,model_seed_qr_generator_wizard,group_seed_technician,1,1,1,1
+access_seed_qr_generator_wizard_manager,seed.qr.generator.wizard.manager,model_seed_qr_generator_wizard,group_seed_manager,1,1,1,1
+
+# Assistant planification production
+access_seed_production_planning_wizard_researcher,seed.production.planning.wizard.researcher,model_seed_production_planning_wizard,group_seed_researcher,1,1,1,1
+access_seed_production_planning_wizard_manager,seed.production.planning.wizard.manager,model_seed_production_planning_wizard,group_seed_manager,1,1,1,1
