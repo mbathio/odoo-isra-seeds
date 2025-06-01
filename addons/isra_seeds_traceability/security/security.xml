@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Catégorie pour les groupes ISRA -->
+    <record id="module_category_isra" model="ir.module.category">
+        <field name="name">ISRA - Agriculture</field>
+        <field name="description">Gestion des semences et traçabilité agricole</field>
+        <field name="sequence">20</field>
+    </record>
+    
+    <!-- Groupe de base : Utilisateur ISRA -->
+    <record id="group_isra_user" model="res.groups">
+        <field name="name">ISRA: Utilisateur</field>
+        <field name="category_id" ref="module_category_isra"/>
+        <field name="comment">Accès en lecture aux données de base</field>
+    </record>
+    
+    <!-- Groupe : Technicien -->
+    <record id="group_isra_technician" model="res.groups">
+        <field name="name">ISRA: Technicien</field>
+        <field name="category_id" ref="module_category_isra"/>
+        <field name="implied_ids" eval="[(4, ref('group_isra_user'))]"/>
+        <field name="comment">Peut créer et modifier les lots de semences</field>
+    </record>
+    
+    <!-- Groupe : Inspecteur Qualité -->
+    <record id="group_isra_inspector" model="res.groups">
+        <field name="name">ISRA: Inspecteur Qualité</field>
+        <field name="category_id" ref="module_category_isra"/>
+        <field name="implied_ids" eval="[(4, ref('group_isra_technician'))]"/>
+        <field name="comment">Peut effectuer les contrôles qualité et certifier</field>
+    </record>
+    
+    <!-- Groupe : Manager -->
+    <record id="group_isra_manager" model="res.groups">
+        <field name="name">ISRA: Manager</field>
+        <field name="category_id" ref="module_category_isra"/>
+        <field name="implied_ids" eval="[(4, ref('group_isra_inspector'))]"/>
+        <field name="comment">Accès complet et gestion des rapports</field>
+    </record>
+    
+    <!-- Groupe : Administrateur -->
+    <record id="group_isra_admin" model="res.groups">
+        <field name="name">ISRA: Administrateur</field>
+        <field name="category_id" ref="module_category_isra"/>
+        <field name="implied_ids" eval="[(4, ref('group_isra_manager'))]"/>
+        <field name="comment">Accès total et configuration système</field>
+    </record>
+    
+    <!-- Règles de sécurité au niveau enregistrement -->
+    
+    <!-- Règle : Multiplicateurs peuvent voir leurs propres lots -->
+    <record id="seed_lot_multiplier_rule" model="ir.rule">
+        <field name="name">Lots du Multiplicateur</field>
+        <field name="model_id" ref="model_isra_seed_lot"/>
+        <field name="domain_force">[('multiplier_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Règle : Techniciens voient tous les lots actifs -->
+    <record id="seed_lot_technician_rule" model="ir.rule">
+        <field name="name">Lots Actifs pour Techniciens</field>
+        <field name="model_id" ref="model_isra_seed_lot"/>
+        <field name="domain_force">[('is_active', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('group_isra_technician'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Règle : Managers voient tout -->
+    <record id="seed_lot_manager_rule" model="ir.rule">
+        <field name="name">Tous les Lots pour Managers</field>
+        <field name="model_id" ref="model_isra_seed_lot"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_isra_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

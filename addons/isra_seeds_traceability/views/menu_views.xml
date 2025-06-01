@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions pour les vues -->
+    
+    <!-- Action principale : Lots de Semences -->
+    <record id="seed_lot_action" model="ir.actions.act_window">
+        <field name="name">Lots de Semences</field>
+        <field name="res_model">isra.seed.lot</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{
+            'search_default_filter_pending': 1,
+            'search_default_group_status': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre premier lot de semences
+            </p>
+            <p>
+                Enregistrez ici tous vos lots de semences avec leur traçabilité complète,
+                des semences de base (GO) jusqu'aux semences commerciales (R1, R2).
+            </p>
+        </field>
+    </record>
+    
+    <!-- Action : Variétés -->
+    <record id="seed_variety_action" model="ir.actions.act_window">
+        <field name="name">Variétés de Semences</field>
+        <field name="res_model">isra.seed.variety</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_is_active': 1}</field>
+    </record>
+    
+    <!-- Action : Multiplicateurs -->
+    <record id="multiplier_action" model="ir.actions.act_window">
+        <field name="name">Multiplicateurs</field>
+        <field name="res_model">isra.multiplier</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+    </record>
+    
+    <!-- Action : Contrôles Qualité -->
+    <record id="quality_control_action" model="ir.actions.act_window">
+        <field name="name">Contrôles Qualité</field>
+        <field name="res_model">isra.quality.control</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+    
+    <!-- Menu principal ISRA -->
+    <menuitem id="menu_isra_root" 
+              name="ISRA Semences" 
+              sequence="10" 
+              web_icon="isra_seed_traceability,static/description/icon.png"/>
+    
+    <!-- Sous-menu : Traçabilité -->
+    <menuitem id="menu_isra_traceability" 
+              name="Traçabilité" 
+              parent="menu_isra_root" 
+              sequence="10"/>
+    
+    <menuitem id="menu_seed_lots" 
+              name="Lots de Semences" 
+              parent="menu_isra_traceability" 
+              action="seed_lot_action" 
+              sequence="10"/>
+    
+    <menuitem id="menu_quality_controls" 
+              name="Contrôles Qualité" 
+              parent="menu_isra_traceability" 
+              action="quality_control_action" 
+              sequence="20"/>
+    
+    <!-- Sous-menu : Gestion -->
+    <menuitem id="menu_isra_management" 
+              name="Gestion" 
+              parent="menu_isra_root" 
+              sequence="20"/>
+    
+    <menuitem id="menu_varieties" 
+              name="Variétés" 
+              parent="menu_isra_management" 
+              action="seed_variety_action" 
+              sequence="10"/>
+    
+    <menuitem id="menu_multipliers" 
+              name="Multiplicateurs" 
+              parent="menu_isra_management" 
+              action="multiplier_action" 
+              sequence="20"/>
+    
+    <!-- Sous-menu : Rapports -->
+    <menuitem id="menu_isra_reports" 
+              name="Rapports" 
+              parent="menu_isra_root" 
+              sequence="30"/>
+</odoo>

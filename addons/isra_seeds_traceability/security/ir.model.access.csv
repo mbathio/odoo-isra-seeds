@@ -1,0 +1,34 @@
+# security/ir.model.access.csv
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+# Variétés de semences
+access_seed_variety_user,seed.variety.user,model_isra_seed_variety,group_isra_user,1,0,0,0
+access_seed_variety_technician,seed.variety.technician,model_isra_seed_variety,group_isra_technician,1,1,1,0
+access_seed_variety_manager,seed.variety.manager,model_isra_seed_variety,group_isra_manager,1,1,1,1
+
+# Lots de semences
+access_seed_lot_user,seed.lot.user,model_isra_seed_lot,group_isra_user,1,0,0,0
+access_seed_lot_technician,seed.lot.technician,model_isra_seed_lot,group_isra_technician,1,1,1,0
+access_seed_lot_inspector,seed.lot.inspector,model_isra_seed_lot,group_isra_inspector,1,1,1,0
+access_seed_lot_manager,seed.lot.manager,model_isra_seed_lot,group_isra_manager,1,1,1,1
+
+# Multiplicateurs
+access_multiplier_user,multiplier.user,model_isra_multiplier,group_isra_user,1,0,0,0
+access_multiplier_technician,multiplier.technician,model_isra_multiplier,group_isra_technician,1,1,1,0
+access_multiplier_manager,multiplier.manager,model_isra_multiplier,group_isra_manager,1,1,1,1
+
+# Contrôles qualité
+access_quality_control_user,quality.control.user,model_isra_quality_control,group_isra_user,1,0,0,0
+access_quality_control_technician,quality.control.technician,model_isra_quality_control,group_isra_technician,1,0,0,0
+access_quality_control_inspector,quality.control.inspector,model_isra_quality_control,group_isra_inspector,1,1,1,1
+access_quality_control_manager,quality.control.manager,model_isra_quality_control,group_isra_manager,1,1,1,1
+
+# Parcelles
+access_parcel_user,parcel.user,model_isra_parcel,group_isra_user,1,0,0,0
+access_parcel_technician,parcel.technician,model_isra_parcel,group_isra_technician,1,1,1,0
+access_parcel_manager,parcel.manager,model_isra_parcel,group_isra_manager,1,1,1,1
+
+# Productions
+access_production_user,production.user,model_isra_production,group_isra_user,1,0,0,0
+access_production_technician,production.technician,model_isra_production,group_isra_technician,1,1,1,0
+access_production_manager,production.manager,model_isra_production,group_isra_manager,1,1,1,1

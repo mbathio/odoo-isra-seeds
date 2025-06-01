@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Séquence pour la génération automatique des IDs de lots -->
+    <record id="sequence_seed_lot" model="ir.sequence">
+        <field name="name">Séquence Lot de Semences</field>
+        <field name="code">isra.seed.lot.sequence</field>
+        <field name="prefix">SL-</field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="implementation">standard</field>
+    </record>
+</odoo>

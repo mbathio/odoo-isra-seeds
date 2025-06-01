@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action pour ouvrir le scanner QR -->
+    <record id="action_qr_scanner" model="ir.actions.act_url">
+        <field name="name">Scanner QR Code</field>
+        <field name="url">/isra/scanner</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- Menu dans le module principal ISRA -->
+    <menuitem id="menu_qr_scanner" 
+              name="📱 Scanner QR" 
+              parent="isra_seed_traceability.menu_isra_traceability" 
+              action="action_qr_scanner" 
+              sequence="30"/>
+    
+    <!-- Vue pour intégrer le scanner dans le backend (optionnel) -->
+    <record id="qr_scanner_backend_view" model="ir.ui.view">
+        <field name="name">qr.scanner.backend</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form string="Scanner QR Code">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>📱 Scanner QR Code ISRA</h1>
+                    </div>
+                    
+                    <group>
+                        <field name="name" readonly="1" string="Utilisateur"/>
+                    </group>
+                    
+                    <!-- Conteneur du scanner -->
+                    <div id="qr-scanner-container" class="mt-4">
+                        <div class="text-center mb-3">
+                            <p class="text-muted">
+                                Pointez votre caméra vers un QR code ISRA pour vérifier un lot de semences
+                            </p>
+                        </div>
+                        <video id="qr-video" width="100%" height="400px" autoplay style="border-radius: 8px; border: 2px solid #28a745;"></video>
+                        <div id="qr-result" class="mt-3" style="display: none;">
+                            <div class="alert alert-success">
+                                <h4>📦 Lot Vérifié</h4>
+                                <div id="lot-info"></div>
+                            </div>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action pour la vue backend -->
+    <record id="action_qr_scanner_backend" model="ir.actions.act_window">
+        <field name="name">Scanner QR Code</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="qr_scanner_backend_view"/>
+        <field name="target">new</field>
+        <field name="res_id" eval="ref('base.user_admin')"/>
+        <field name="context">{'form_view_initial_mode': 'edit'}</field>
+    </record>
+    
+    <!-- Menu alternatif pour vue backend -->
+    <menuitem id="menu_qr_scanner_backend" 
+              name="🔍 Scanner Backend" 
+              parent="isra_seed_traceability.menu_isra_traceability" 
+              action="action_qr_scanner_backend" 
+              sequence="31"
+              groups="isra_seed_traceability.group_isra_technician"/>
+</odoo>

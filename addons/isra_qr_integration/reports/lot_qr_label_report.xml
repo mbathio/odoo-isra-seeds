@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Définition du rapport -->
+    <record id="report_lot_qr_label" model="ir.actions.report">
+        <field name="name">Étiquette QR Code</field>
+        <field name="model">isra.seed.lot</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">isra_seed_traceability.lot_qr_label_template</field>
+        <field name="report_file">isra_seed_traceability.lot_qr_label_template</field>
+        <field name="binding_model_id" ref="model_isra_seed_lot"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+    
+    <!-- Template du rapport -->
+    <template id="lot_qr_label_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="lot">
+                <div class="page">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <!-- En-tête ISRA -->
+                            <h3 style="color: #2e7d32; margin-bottom: 20px;">
+                                🌾 INSTITUT SÉNÉGALAIS DE RECHERCHES AGRICOLES
+                            </h3>
+                            <h4 style="color: #4caf50;">Saint-Louis - Traçabilité des Semences</h4>
+                            <hr style="border-color: #4caf50;"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Informations du lot -->
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-8">
+                            <table class="table table-borderless" style="font-size: 14px;">
+                                <tr>
+                                    <td><strong>ID Lot:</strong></td>
+                                    <td><span t-field="lot.name" style="font-size: 16px; font-weight: bold;"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Variété:</strong></td>
+                                    <td><span t-field="lot.variety_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Code:</strong></td>
+                                    <td><span t-field="lot.variety_id.code"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Niveau:</strong></td>
+                                    <td>
+                                        <span class="badge badge-primary" style="font-size: 12px;">
+                                            <span t-field="lot.level"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quantité:</strong></td>
+                                    <td><span t-field="lot.quantity"/> kg</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Production:</strong></td>
+                                    <td><span t-field="lot.production_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expiration:</strong></td>
+                                    <td><span t-field="lot.expiry_date"/></td>
+                                </tr>
+                                <tr t-if="lot.multiplier_id">
+                                    <td><strong>Multiplicateur:</strong></td>
+                                    <td><span t-field="lot.multiplier_id.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- QR Code -->
+                        <div class="col-4 text-center">
+                            <div style="border: 2px solid #4caf50; padding: 15px; border-radius: 10px;">
+                                <img t-att-src="image_data_uri(lot.qr_code_image)" 
+                                     style="width: 150px; height: 150px;"/>
+                                <br/>
+                                <small style="color: #666;">Scannez pour vérifier</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instructions -->
+                    <div class="row" style="margin-top: 40px;">
+                        <div class="col-12">
+                            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; border-left: 4px solid #4caf50;">
+                                <h5 style="color: #2e7d32;">📱 Instructions de Vérification</h5>
+                                <ul style="margin-bottom: 0;">
+                                    <li>Scannez le QR code avec votre téléphone</li>
+                                    <li>Vérifiez l'authenticité sur https://isra.sn/verify</li>
+                                    <li>Contactez ISRA Saint-Louis pour toute question</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pied de page -->
+                    <div class="row" style="position: absolute; bottom: 30px; width: 100%;">
+                        <div class="col-12 text-center">
+                            <hr style="border-color: #4caf50;"/>
+                            <small style="color: #666;">
+                                Généré le <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')"/> 
+                                - ISRA Saint-Louis - www.isra.sn
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue Liste des Lots -->
+    <record id="seed_lot_tree_view" model="ir.ui.view">
+        <field name="name">isra.seed.lot.tree</field>
+        <field name="model">isra.seed.lot</field>
+        <field name="arch" type="xml">
+            <tree string="Lots de Semences" 
+                  decoration-success="status=='certified'" 
+                  decoration-danger="status=='rejected'" 
+                  decoration-info="status=='pending'"
+                  decoration-muted="is_expired">
+                
+                <!-- Colonnes affichées -->
+                <field name="name" string="ID Lot"/>
+                <field name="variety_id" string="Variété"/>
+                <field name="level" string="Niveau"/>
+                <field name="quantity" string="Quantité (kg)" sum="Total"/>
+                <field name="production_date" string="Production"/>
+                <field name="expiry_date" string="Expiration"/>
+                <field name="days_to_expiry" string="Jours restants"/>
+                <field name="multiplier_id" string="Multiplicateur"/>
+                <field name="status" string="Statut"/>
+                <field name="quality_status" string="Qualité"/>
+                
+                <!-- Champs invisibles pour les filtres -->
+                <field name="is_expired" invisible="1"/>
+                <field name="variety_code" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Vue Kanban (cartes) -->
+    <record id="seed_lot_kanban_view" model="ir.ui.view">
+        <field name="name">isra.seed.lot.kanban</field>
+        <field name="model">isra.seed.lot</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="variety_id"/>
+                <field name="level"/>
+                <field name="quantity"/>
+                <field name="production_date"/>
+                <field name="status"/>
+                <field name="qr_code_image"/>
+                <field name="days_to_expiry"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <!-- En-tête de la carte -->
+                                <div class="row">
+                                    <div class="col-8">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <field name="qr_code_image" widget="image" 
+                                               options="{'size': [40, 40]}"/>
+                                    </div>
+                                </div>
+                                
+                                <!-- Informations principales -->
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <span class="badge badge-pill badge-primary">
+                                            <field name="level"/>
+                                        </span>
+                                        <br/>
+                                        <field name="variety_id"/>
+                                    </div>
+                                </div>
+                                
+                                <!-- Quantité et dates -->
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <i class="fa fa-balance-scale"/> 
+                                        <field name="quantity"/> kg
+                                    </div>
+                                    <div class="col-6">
+                                        <i class="fa fa-calendar"/> 
+                                        <field name="production_date"/>
+                                    </div>
+                                </div>
+                                
+                                <!-- Alerte expiration -->
+                                <div class="row mt-2" t-if="record.days_to_expiry.raw_value &lt; 30">
+                                    <div class="col-12">
+                                        <span class="badge badge-warning">
+                                            <i class="fa fa-warning"/> 
+                                            Expire dans <field name="days_to_expiry"/> jours
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- Vue Formulaire Détaillée -->
+    <record id="seed_lot_form_view" model="ir.ui.view">
+        <field name="name">isra.seed.lot.form</field>
+        <field name="model">isra.seed.lot</field>
+        <field name="arch" type="xml">
+            <form string="Lot de Semences">
+                <!-- Barre de statut en haut -->
+                <header>
+                    <button name="action_certify" type="object" 
+                            string="Certifier" class="btn-primary"
+                            attrs="{'invisible': [('status', '!=', 'pending')]}"/>
+                    
+                    <button name="action_reject" type="object" 
+                            string="Rejeter" class="btn-secondary"
+                            attrs="{'invisible': [('status', 'in', ['certified', 'rejected'])]}"/>
+                    
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="draft,pending,certified,distributed"/>
+                </header>
+                
+                <sheet>
+                    <!-- Boutons d'action en haut à droite -->
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Bouton Généalogie -->
+                        <button name="action_view_genealogy" type="object" 
+                                class="oe_stat_button" icon="fa-sitemap">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Généalogie</span>
+                            </div>
+                        </button>
+                        
+                        <!-- Bouton QR Code -->
+                        <button name="action_print_qr_label" type="object" 
+                                class="oe_stat_button" icon="fa-qrcode">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Étiquette QR</span>
+                            </div>
+                        </button>
+                        
+                        <!-- Compteur contrôles qualité -->
+                        <button name="action_view_quality_controls" type="object" 
+                                class="oe_stat_button" icon="fa-flask">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="quality_control_count"/>
+                                </span>
+                                <span class="o_stat_text">Contrôles</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Bandeau de certification -->
+                    <widget name="web_ribbon" title="Certifié" bg_color="bg-success" 
+                            attrs="{'invisible': [('status', '!=', 'certified')]}"/>
+                    
+                    <widget name="web_ribbon" title="Rejeté" bg_color="bg-danger" 
+                            attrs="{'invisible': [('status', '!=', 'rejected')]}"/>
+                    
+                    <widget name="web_ribbon" title="Expiré" bg_color="bg-warning" 
+                            attrs="{'invisible': [('is_expired', '=', False)]}"/>
+                    
+                    <!-- Titre principal -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" class="o_text_overflow"/>
+                        </h1>
+                        <h3>
+                            <field name="variety_id" readonly="1" 
+                                   options="{'no_open': True, 'no_create': True}"/>
+                        </h3>
+                    </div>
+                    
+                    <!-- Informations principales en colonnes -->
+                    <group>
+                        <!-- Colonne de gauche -->
+                        <group name="left_column" string="Informations du Lot">
+                            <field name="level" required="1"/>
+                            <field name="quantity" required="1"/>
+                            <field name="production_date" required="1"/>
+                            <field name="expiry_date" readonly="1"/>
+                            <field name="days_to_expiry" readonly="1"
+                                   attrs="{'invisible': [('expiry_date', '=', False)]}"/>
+                            <field name="batch_number"/>
+                        </group>
+                        
+                        <!-- Colonne de droite -->
+                        <group name="right_column" string="Production">
+                            <field name="multiplier_id" 
+                                   options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="parcel_id" 
+                                   domain="[('multiplier_id', '=', multiplier_id)]"/>
+                            <field name="parent_lot_id" 
+                                   domain="[('variety_id', '=', variety_id), ('id', '!=', id)]"/>
+                            <field name="is_active"/>
+                            
+                            <!-- QR Code à droite -->
+                            <field name="qr_code_image" widget="image" 
+                                   class="oe_avatar" options="{'size': [150, 150]}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Onglets pour les détails -->
+                    <notebook>
+                        <!-- Onglet Contrôles Qualité -->
+                        <page string="Contrôles Qualité" name="quality_controls">
+                            <field name="quality_control_ids" context="{'default_lot_id': active_id}">
+                                <tree editable="bottom" decoration-success="result=='pass'" 
+                                      decoration-danger="result=='fail'">
+                                    <field name="control_date" required="1"/>
+                                    <field name="germination_rate" required="1"/>
+                                    <field name="variety_purity" required="1"/>
+                                    <field name="moisture_content"/>
+                                    <field name="seed_health"/>
+                                    <field name="result" readonly="1"/>
+                                    <field name="inspector_id" required="1"/>
+                                    <field name="test_method"/>
+                                    <field name="observations"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="control_date"/>
+                                            <field name="inspector_id"/>
+                                            <field name="test_method"/>
+                                        </group>
+                                        <group>
+                                            <field name="germination_rate"/>
+                                            <field name="variety_purity"/>
+                                            <field name="moisture_content"/>
+                                            <field name="seed_health"/>
+                                            <field name="result" readonly="1"/>
+                                        </group>
+                                    </group>
+                                    <field name="observations"/>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <!-- Onglet Lots Dérivés -->
+                        <page string="Lots Dérivés" name="child_lots">
+                            <field name="child_lot_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="level"/>
+                                    <field name="quantity"/>
+                                    <field name="production_date"/>
+                                    <field name="status"/>
+                                    <field name="multiplier_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <!-- Onglet QR Code -->
+                        <page string="QR Code" name="qr_code">
+                            <group>
+                                <group>
+                                    <field name="qr_code_image" widget="image" 
+                                           options="{'size': [300, 300]}"/>
+                                </group>
+                                <group>
+                                    <field name="qr_code_data" widget="text" readonly="1"/>
+                                    <button name="_generate_qr_code" type="object" 
+                                            string="Régénérer QR Code" class="btn-secondary"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Onglet Notes -->
+                        <page string="Notes et Observations" name="notes">
+                            <field name="notes" placeholder="Ajoutez ici vos observations sur ce lot..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <!-- Zone de messagerie/historique -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue Recherche/Filtres -->
+    <record id="seed_lot_search_view" model="ir.ui.view">
+        <field name="name">isra.seed.lot.search</field>
+        <field name="model">isra.seed.lot</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des Lots">
+                <!-- Barre de recherche -->
+                <field name="name" string="ID Lot" 
+                       filter_domain="[('name', 'ilike', self)]"/>
+                <field name="variety_id" string="Variété"/>
+                <field name="multiplier_id" string="Multiplicateur"/>
+                <field name="notes" string="Notes"/>
+                
+                <!-- Filtres prédéfinis -->
+                <separator/>
+                <filter name="filter_draft" string="Brouillons" 
+                        domain="[('status', '=', 'draft')]"/>
+                <filter name="filter_pending" string="En Attente" 
+                        domain="[('status', '=', 'pending')]"/>
+                <filter name="filter_certified" string="Certifiés" 
+                        domain="[('status', '=', 'certified')]"/>
+                <filter name="filter_expired" string="Expirés" 
+                        domain="[('is_expired', '=', True)]"/>
+                <filter name="filter_expiring_soon" string="Expirent Bientôt" 
+                        domain="[('days_to_expiry', '<=', 30), ('days_to_expiry', '>', 0)]"/>
+                
+                <separator/>
+                <filter name="filter_go" string="GO" domain="[('level', '=', 'GO')]"/>
+                <filter name="filter_g1" string="G1" domain="[('level', '=', 'G1')]"/>
+                <filter name="filter_g2" string="G2" domain="[('level', '=', 'G2')]"/>
+                <filter name="filter_r1" string="R1" domain="[('level', '=', 'R1')]"/>
+                <filter name="filter_r2" string="R2" domain="[('level', '=', 'R2')]"/>
+                
+                <separator/>
+                <filter name="filter_my_multiplier" string="Mes Lots" 
+                        domain="[('multiplier_id.user_id', '=', uid)]"/>
+                
+                <!-- Groupements -->
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_variety" string="Variété" 
+                            context="{'group_by': 'variety_id'}"/>
+                    <filter name="group_level" string="Niveau" 
+                            context="{'group_by': 'level'}"/>
+                    <filter name="group_status" string="Statut" 
+                            context="{'group_by': 'status'}"/>
+                    <filter name="group_multiplier" string="Multiplicateur" 
+                            context="{'group_by': 'multiplier_id'}"/>
+                    <filter name="group_production_month" string="Mois de Production" 
+                            context="{'group_by': 'production_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

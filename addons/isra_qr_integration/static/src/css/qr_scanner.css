@@ -1,0 +1,304 @@
+/* static/src/css/qr_scanner.css */
+
+/* Conteneur principal du scanner */
+#qr-scanner-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Vidéo du scanner */
+#qr-video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 300px;
+    background: #000;
+    border-radius: 8px;
+    border: 3px solid #28a745;
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+/* Overlay pour le cadre de scan */
+#qr-video::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border: 2px dashed #28a745;
+    border-radius: 10px;
+    pointer-events: none;
+}
+
+/* Contrôles du scanner */
+.qr-scanner-controls {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.qr-scanner-controls .btn {
+    margin: 5px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.qr-scanner-controls .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Résultat du scan */
+#qr-result {
+    margin-top: 20px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Badges de statut */
+.badge {
+    font-size: 0.9em;
+    padding: 6px 12px;
+    border-radius: 15px;
+}
+
+.badge i {
+    margin-right: 5px;
+}
+
+/* Table d'informations */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table td {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+.table td strong {
+    color: #495057;
+}
+
+/* Alertes */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 15px 20px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-left: 4px solid #17a2b8;
+}
+
+/* Animation du spinner */
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mode mobile */
+@media (max-width: 768px) {
+    #qr-scanner-container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    #qr-video {
+        min-height: 250px;
+    }
+    
+    .qr-scanner-controls .btn {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .table-responsive {
+        font-size: 0.9em;
+    }
+}
+
+/* Scanner backend pour les utilisateurs Odoo */
+.qr-scanner-backend {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.qr-scanner-backend h4 {
+    color: #2e7d32;
+    margin-bottom: 20px;
+}
+
+/* Style pour les boutons d'action rapide */
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+/* Effets visuels pour les états */
+.scanning {
+    position: relative;
+}
+
+.scanning::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(40, 167, 69, 0.3),
+        transparent
+    );
+    animation: scanLine 2s linear infinite;
+}
+
+@keyframes scanLine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Indicateur de qualité visuel */
+.quality-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.quality-pass {
+    background-color: #28a745;
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
+}
+
+.quality-fail {
+    background-color: #dc3545;
+    box-shadow: 0 0 6px rgba(220, 53, 69, 0.6);
+}
+
+/* Styles pour les modales de résultat */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+/* Responsive pour très petits écrans */
+@media (max-width: 480px) {
+    #qr-scanner-container {
+        padding: 10px;
+        margin: 5px;
+    }
+    
+    .table td {
+        padding: 6px 8px;
+        font-size: 0.85em;
+    }
+    
+    .badge {
+        font-size: 0.75em;
+        padding: 4px 8px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+}
+
+/* Animation pour les alertes d'expiration */
+.alert-warning {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Style pour les liens externes */
+.btn-external {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-external::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.btn-external:hover::before {
+    left: 100%;
+}

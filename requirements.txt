@@ -1,9 +1,6 @@
-# requirements.txt - Dépendances pour l'IDE (optionnel)
-# Ces packages aident l'IDE mais ne sont pas nécessaires pour Odoo qui les inclut déjà
-
+# requirements.txt
 qrcode[pil]==7.4.2
-python-dateutil==2.8.2
-Pillow==10.0.0
+pillow==10.0.1
 
-# Note: Odoo lui-même n'est pas installable via pip facilement
-# Ces erreurs d'import sont normales dans le développement Odoo
+# Ou dans le Dockerfile :
+RUN pip install qrcode[pil]==7.4.2 pillow==10.0.1

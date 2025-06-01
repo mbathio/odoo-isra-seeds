@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Fonction pour générer automatiquement les QR codes des lots existants -->
+        <function model="isra.seed.lot" name="generate_qr_code">
+            <value eval="[(6, 0, ref('isra_seed_traceability').search([]))]"/>
+        </function>
+        
+        <!-- Logs de démonstration pour les vérifications QR -->
+        <record id="demo_qr_log_1" model="isra.qr.verification.log">
+            <field name="verification_date" eval="(DateTime.now() - timedelta(days=1))"/>
+            <field name="qr_data">{"lot_id": "SL-G1-2024-001", "variety_name": "Sahel 108"}</field>
+            <field name="result">success</field>
+            <field name="model_name">isra.seed.lot</field>
+            <field name="record_id" eval="1"/>
+            <field name="ip_address">192.168.1.100</field>
+            <field name="user_agent">Mozilla/5.0 (Mobile; Android)</field>
+        </record>
+        
+        <record id="demo_qr_log_2" model="isra.qr.verification.log">
+            <field name="verification_date" eval="(DateTime.now() - timedelta(hours=2))"/>
+            <field name="qr_data">{"lot_id": "SL-FAKE-001"}</field>
+            <field name="result">not_found</field>
+            <field name="ip_address">10.0.0.50</field>
+            <field name="error_message">Lot non trouvé dans la base de données</field>
+        </record>
+        
+        <record id="demo_qr_log_3" model="isra.qr.verification.log">
+            <field name="verification_date" eval="DateTime.now()"/>
+            <field name="qr_data">{"lot_id": "SL-R1-2024-003", "variety_name": "ZM309"}</field>
+            <field name="result">success</field>
+            <field name="model_name">isra.seed.lot</field>
+            <field name="record_id" eval="3"/>
+            <field name="ip_address">172.16.0.25</field>
+            <field name="user_agent">Mozilla/5.0 (iPhone; iOS)</field>
+        </record>
+    </data>
+</odoo>

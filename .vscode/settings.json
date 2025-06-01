@@ -1,23 +1,12 @@
 {
-  "python.analysis.extraPaths": ["./addons", "/usr/lib/python3/dist-packages"],
-  "python.analysis.ignore": ["**/node_modules", "**/.venv", "**/migrations"],
   "python.analysis.diagnosticMode": "workspace",
   "python.linting.enabled": false,
   "python.analysis.autoImportCompletions": false,
-  "python.analysis.typeCheckingMode": "basic",
 
-  // Configuration Odoo spécifique
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportMissingImports": "none",
-    "reportMissingModuleSource": "none",
-    "reportOptionalMemberAccess": "information",
-    "reportOptionalSubscript": "information",
-    "reportOptionalCall": "information",
-    "reportOptionalIterable": "information",
-    "reportUndefinedVariable": "error",
-    "reportArgumentType": "warning"
-  },
+  // ✅ CORRECTION: Enlever les paramètres en conflit avec pyrightconfig.json
+  // Ces paramètres ne peuvent pas être utilisés quand pyrightconfig.json existe
 
+  // Configuration Odoo spécifique (gardée)
   "files.associations": {
     "*.xml": "xml",
     "*.py": "python"
@@ -26,9 +15,37 @@
   "xml.validation.enabled": true,
   "xml.format.enabled": true,
 
-  // Configuration spécifique pour Odoo
-  "python.analysis.stubPath": "./stubs",
+  // Emmet pour XML (gardé)
   "emmet.includeLanguages": {
     "xml": "html"
+  },
+
+  // ✅ AMÉLIORATION: Configuration Python globale
+  "python.defaultInterpreterPath": "/usr/bin/python3",
+  "python.analysis.indexing": true,
+
+  // ✅ Configuration spécifique Odoo
+  "[python]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
+  },
+
+  // ✅ Exclusions pour améliorer les performances
+  "files.exclude": {
+    "**/.git": true,
+    "**/.venv": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/migrations": true
+  },
+
+  // ✅ Configuration pour les fichiers Odoo
+  "files.associations": {
+    "*.xml": "xml",
+    "*.py": "python",
+    "*.yml": "yaml",
+    "*.yaml": "yaml"
   }
 }

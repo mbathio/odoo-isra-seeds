@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Rapport de Production -->
+    <record id="report_production_summary" model="ir.actions.report">
+        <field name="name">Rapport de Production</field>
+        <field name="model">isra.production</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">isra_seed_traceability.production_report_template</field>
+        <field name="report_file">isra_seed_traceability.production_report_template</field>
+    </record>
+    
+    <template id="production_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="production">
+                <div class="page">
+                    <!-- En-tête -->
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-8">
+                                <h2 style="color: #2e7d32;">📋 RAPPORT DE PRODUCTION</h2>
+                                <h4>Institut Sénégalais de Recherches Agricoles</h4>
+                            </div>
+                            <div class="col-4 text-right">
+                                <img src="/isra_seed_traceability/static/img/isra_logo.png" 
+                                     style="height: 60px;" alt="ISRA"/>
+                            </div>
+                        </div>
+                        <hr style="border-color: #4caf50; margin: 20px 0;"/>
+                    </div>
+                    
+                    <!-- Informations générales -->
+                    <div class="row">
+                        <div class="col-6">
+                            <h4>Informations du Lot</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>ID Lot:</strong></td>
+                                    <td><span t-field="production.lot_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Variété:</strong></td>
+                                    <td><span t-field="production.lot_id.variety_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Niveau:</strong></td>
+                                    <td><span t-field="production.lot_id.level"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Statut:</strong></td>
+                                    <td>
+                                        <span t-if="production.status == 'completed'" 
+                                              class="badge badge-success">Terminé</span>
+                                        <span t-elif="production.status == 'in_progress'" 
+                                              class="badge badge-warning">En Cours</span>
+                                        <span t-else="" class="badge badge-secondary">
+                                            <span t-field="production.status"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-6">
+                            <h4>Production</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Multiplicateur:</strong></td>
+                                    <td><span t-field="production.multiplier_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Parcelle:</strong></td>
+                                    <td><span t-field="production.parcel_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Début:</strong></td>
+                                    <td><span t-field="production.start_date"/></td>
+                                </tr>
+                                <tr t-if="production.end_date">
+                                    <td><strong>Fin:</strong></td>
+                                    <td><span t-field="production.end_date"/></td>
+                                </tr>
+                                <tr t-if="production.actual_yield">
+                                    <td><strong>Rendement:</strong></td>
+                                    <td><span t-field="production.actual_yield"/> kg</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Activités de production -->
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-12">
+                            <h4>Activités de Production</h4>
+                            <table class="table table-striped">
+                                <thead style="background-color: #e8f5e8;">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Personnel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="production.activity_ids" t-as="activity">
+                                        <td><span t-field="activity.activity_date"/></td>
+                                        <td>
+                                            <span class="badge badge-info">
+                                                <span t-field="activity.type"/>
+                                            </span>
+                                        </td>
+                                        <td><span t-field="activity.description"/></td>
+                                        <td>
+                                            <span t-foreach="activity.personnel" t-as="person">
+                                                <span t-esc="person"/>
+                                                <span t-if="not person_last">, </span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Contrôles qualité -->
+                    <div class="row" style="margin-top: 30px;" 
+                         t-if="production.lot_id.quality_control_ids">
+                        <div class="col-12">
+                            <h4>Contrôles Qualité</h4>
+                            <table class="table table-striped">
+                                <thead style="background-color: #e8f5e8;">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Germination (%)</th>
+                                        <th>Pureté (%)</th>
+                                        <th>Résultat</th>
+                                        <th>Inspecteur</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="production.lot_id.quality_control_ids" t-as="qc">
+                                        <td><span t-field="qc.control_date"/></td>
+                                        <td><span t-field="qc.germination_rate"/></td>
+                                        <td><span t-field="qc.variety_purity"/></td>
+                                        <td>
+                                            <span t-if="qc.result == 'pass'" 
+                                                  class="badge badge-success">✓ Réussi</span>
+                                            <span t-else="" 
+                                                  class="badge badge-danger">✗ Échec</span>
+                                        </td>
+                                        <td><span t-field="qc.inspector_id.name"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div class="row" style="margin-top: 30px;" t-if="production.notes">
+                        <div class="col-12">
+                            <h4>Observations</h4>
+                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px;">
+                                <span t-field="production.notes"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pied de page -->
+                    <div class="footer">
+                        <div class="text-center">
+                            <hr style="border-color: #4caf50;"/>
+                            <p>
+                                <strong>ISRA Saint-Louis</strong> - 
+                                Rapport généré le <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

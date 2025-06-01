@@ -1,40 +1,84 @@
+# docker-compose.prod.yml
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:13
-    platform: linux/amd64
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo
-      POSTGRES_HOST_AUTH_METHOD: trust
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+  nginx:
+    image: nginx:alpine
     ports:
-      - "5433:5432"
-    restart: unless-stopped
-    command: postgres -c max_connections=200
-
-  odoo:
-    image: odoo:16.0
-    platform: linux/amd64
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - odoo-web-data:/var/lib/odoo
     depends_on:
-      - postgres
-    ports:
-      - "8069:8069"
-    environment:
-      - HOST=postgres
-      - USER=odoo
-      - PASSWORD=odoo
-      - DB_MAXCONN=64
-    volumes:
-      - ./addons:/mnt/extra-addons
-      - ./config:/etc/odoo
-      - odoo_data:/var/lib/odoo
+      - web
     restart: unless-stopped
-    command: odoo -c /etc/odoo/odoo.conf
+
+  web:
+    image: odoo:17.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - HOST=db
+      - USER=odoo_prod
+      - PASSWORD=${ODOO_DB_PASSWORD}
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "2.0"
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=isra_production
+      - POSTGRES_USER=odoo_prod
+      - POSTGRES_PASSWORD=${ODOO_DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+
+  backup:
+    image: postgres:15
+    depends_on:
+      - db
+    environment:
+      - PGPASSWORD=${ODOO_DB_PASSWORD}
+    volumes:
+      - ./backups:/backups
+    command: |
+      sh -c "
+        while true; do
+          pg_dump -h db -U odoo_prod isra_production > /backups/backup_$(date +%Y%m%d_%H%M%S).sql
+          find /backups -name '*.sql' -mtime +7 -delete
+          sleep 86400
+        done
+      "
+    restart: unless-stopped
 
 volumes:
-  postgres_data:
-  odoo_data:
+  odoo-web-data:
+  odoo-db-data:
+
+networks:
+  default:
+    driver: bridge
